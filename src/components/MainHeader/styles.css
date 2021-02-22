@@ -1,0 +1,41 @@
+.mainHeader {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;  
+  
+}
+
+.mainHeader__canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+}
+
+.mainHeader__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    z-index: 10;
+    color: #ffffff;
+}
+
+.mainHeader__info h1 {
+    font-size: 6rem;
+    font-family: "Titillium Web Bold";
+    font-display: fallback;
+    color: #ffffff;
+}
+
+.mainHeader__contact {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    width: 35%;
+}
