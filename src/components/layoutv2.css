@@ -23,6 +23,7 @@ body {
   -webkit-font-feature-settings: "kern", "liga", "clig", "calt";
   font-feature-settings: "kern", "liga", "clig", "calt";
   background: #212121;
+  color: #FFFFFF;
 }
 
 h1 {

@@ -27,8 +27,8 @@ function Rig() {
   // On Scroll
   const onScroll = () => {
     setScrollPos(window.pageYOffset);
-    camera.position.y = 5 - window.pageYOffset/15
-    console.log(camera.position.y)
+    camera.position.y = 5 - window.pageYOffset/45
+    //console.log(camera.position.y)
   };
 
   // Add and remove the window listener
