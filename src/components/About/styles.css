@@ -8,13 +8,20 @@
 
 .about__wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 800px;
+    max-width: 700px;
 }
 
 .about__img {
     max-width: 300;
     border-radius: 50%;
+}
+
+.about__content{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
