@@ -25,8 +25,8 @@ function About() {
               style={{
                 position: "relative",
                 width: '100%',
-                maxWidth: "300px",
-                maxHeight: "300px",
+                maxWidth: "200px",
+                maxHeight: "200px",
               }}
             >
               <Img

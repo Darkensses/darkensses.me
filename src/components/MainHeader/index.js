@@ -16,6 +16,7 @@ import {
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons"
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons"
+import { useMediaQuery } from "react-responsive"
 
 
 
@@ -47,6 +48,10 @@ function Rig() {
 }
 
 function MainHeader() {
+  const isMDscreen = useMediaQuery({
+    query: '(max-width: 720px)'
+  });
+
   return (
     <>
       <div className="mainHeader">
@@ -54,26 +59,28 @@ function MainHeader() {
           <Canvas
             resize={{ scroll: false }}
             camera={{
-              position: [0, 5, 8],
+              position: [-50, 5, 8],
               fov: 85,
               rotation: [0, (180 * Math.PI) / 180, 0],
             }}
           >
             <color attach="background" args={['#080808']} />
-            <fog color="#F06292" attach="fog" near={7} far={12} />
-            <Rattlesnake />
+            <fog color="#F06292" attach="fog" near={7} far={12} />            
             <pointLight position={[5, 3, 20]} intensity={0.7} color="#F06292" distance={800}/>
             <ambientLight color="#ffffff" intensity={0.6} />
-            <mesh position={[-6, 4, 0]}>
-              <sphereGeometry args={[0.8, 32, 32]} />
-              <MeshDistortMaterial
-                attach="material"
-                distort={0.4}
-                speed={3}
-                wireframe={false}
-                color={"#6a83f7"}
-              />
-            </mesh>
+            <group position={isMDscreen ? [3,-1,0] : [0,0,0]}>
+              <Rattlesnake position={[6,3,4]}/>
+              <mesh position={[-6, 4, 0]}>
+                <sphereGeometry args={[0.8, 32, 32]} />
+                <MeshDistortMaterial
+                  attach="material"
+                  distort={0.4}
+                  speed={3}
+                  wireframe={false}
+                  color={"#6a83f7"}
+                />
+              </mesh>
+            </group>
             <Rig />
             <Effects />
           </Canvas>

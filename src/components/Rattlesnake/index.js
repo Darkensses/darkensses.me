@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react"
 import { useFrame } from "react-three-fiber"
 import { map, noise } from "./PerlinNoise"
 
-function Rattlesnake() {
+function Rattlesnake(props) {
   let ref = useRef()
   let refPlaneGeo = useRef()
   let [arrayMountains, setArrayMountains] = useState([]);
@@ -36,7 +36,7 @@ function Rattlesnake() {
   });
 //7,2.5,3
   return (
-    <mesh ref={ref} position={[6,3,4]} rotation={[(70 * Math.PI) / 180, (25 * Math.PI) / 180, (90 * Math.PI) / 180]}>
+    <mesh ref={ref} position={props.position} rotation={[(70 * Math.PI) / 180, (25 * Math.PI) / 180, (90 * Math.PI) / 180]}>
       <planeGeometry ref={refPlaneGeo} args={[15, 30, 90, 90]} />
       <meshBasicMaterial wireframe={true} color="#6a83f7" />
     </mesh>

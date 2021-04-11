@@ -25,3 +25,13 @@
     justify-content: center;
     align-items: center;
 }
+
+@media (max-width: 720px) {
+    .about__img {
+        max-width: 200;
+    }
+    
+    .about__content {
+        flex-direction: column;
+    }
+}

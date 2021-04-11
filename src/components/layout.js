@@ -27,11 +27,7 @@ const Layout = ({ children }) => {
     <>
       
       <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 1920,
-          padding: `0 4.0875rem 1.45rem`,
-        }}
+        className="layout__container"
       >
         <main>{children}</main>
         <footer

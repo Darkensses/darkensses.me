@@ -39,3 +39,20 @@
     padding: 20px 0;
     width: 35%;
 }
+
+@media (max-width: 720px) {
+    .mainHeader__info {        
+        display: flex;
+        flex-direction: column;
+        justify-content: center;       
+    }
+
+    .mainHeader__info h1 {
+        font-size: 3.5rem;
+    }
+
+    .mainHeader__contact {
+        width: 50%;
+        min-width: 160px;
+    }
+}
