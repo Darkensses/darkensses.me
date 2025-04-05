@@ -1,0 +1,32 @@
+@import url("reset.css") layer(reset);
+@font-face {
+	font-family: "VCR";
+	src: url("../assets/fonts/VCR_OSD_MONO_1.001.ttf");
+}
+
+body {
+	background-color: rgb(35, 38, 47);
+}
+
+#webgl {
+	width: 100%;
+	height: 100vh;
+	display: block;
+	position: fixed;
+	top: 0;
+}
+
+#mainTitle {
+	color: #fff;
+	font-family: 'VCR', 'Courier New', Courier, monospace;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+	font-size: 4rem;
+	letter-spacing: 0.3em;
+	position: fixed;
+	bottom: 15rem;
+	left: 50%;
+	transform: translate(-50%, 0);
+	filter: url(#rgb-split);
+}
