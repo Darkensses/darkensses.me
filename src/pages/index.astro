@@ -2,31 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout>
+<Layout>	
+	<div class="marquee" id="marquee">
+		<div class="marquee__track">
+			<div class="marquee__group" id="mg1">
+				<span>I hate Java</span>
+				<span style="font-size: 1.2rem;">☠</span>
+			</div>
+			<div class="marquee__group" id="mg2" aria-hidden="true"></div>
+		</div>
+	</div>
 	<canvas id="webgl"></canvas>
 
-	<svg width="0" height="0">
-		<filter id="rgb-split">
-			<feOffset in="SourceGraphic" dx="2" dy="2" result="layer-one" />
-			<feComponentTransfer in="layer-one" result="red">
-					<feFuncR type="identity" />
-					<feFuncG type="discrete" tableValues="0" />
-					<feFuncB type="discrete" tableValues="0" />
-			</feComponentTransfer>
-
-			<feOffset in="SourceGraphic" dx="-2" dy="-2" result="layer-two" />
-			<feComponentTransfer in="layer-two" result="cyan">
-					<feFuncR type="discrete" tableValues="0" />
-					<feFuncG type="identity" />
-					<feFuncB type="identity" />
-			</feComponentTransfer>
-
-			<feBlend in="red" in2="cyan" mode="screen" result="color-split" />
-		</filter>
-	</svg>
-	<h1 id="mainTitle">*DARKENSSES*</h1>
-
 	<script>
+		import '../scripts/marquee';
 		import '../scripts/scene'
 	</script>
 </Layout>
