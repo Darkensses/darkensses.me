@@ -1,18 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import imgMeDither from '../assets/images/me_dither_opt.jpg';
+import Marquee from '../components/Marquee.astro';
 ---
 
 <Layout>	
-	<div class="marquee" id="marquee">
-		<div class="marquee__track">
-			<div class="marquee__group" id="mg1">
-				<span>I hate Java</span>
-				<span style="font-size: 1.2rem;">☠</span>
-			</div>
-			<div class="marquee__group" id="mg2" aria-hidden="true"></div>
-		</div>
-	</div>
+	<Marquee text="I hate Java" separator="☠" />
 	<canvas id="webgl"></canvas>
 
 	<div id="info">
@@ -55,7 +48,6 @@ import imgMeDither from '../assets/images/me_dither_opt.jpg';
 	</div>
 
 	<script>
-		import '../scripts/marquee';
 		import '../scripts/scene'
 	</script>
 </Layout>
