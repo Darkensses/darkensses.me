@@ -4,9 +4,24 @@ import imgMeDither from '../assets/images/me_dither_opt.jpg';
 import Marquee from '../components/Marquee.astro';
 ---
 
-<Layout>	
-	<Marquee text="I hate Java" separator="☠" />
+<Layout>		
 	<canvas id="webgl"></canvas>
+	<div id="header">
+		<Marquee text="I hate Java" separator="☠" />
+		<div id="cover">
+			<nav>
+				<ul>
+					<li><a href="#">About</a></li>
+					<li><a href="#">Art</a></li>
+					<li><a href="#">Blog</a></li>
+					<li><a href="#">CV</a></li>
+				</ul>
+			</nav>
+			<div style="border: solid 1px blue; max-width: fit-content;">
+				<h2 style="font-size: 6rem;">DARKENSSES</h2>
+			</div>
+		</div>
+	</div>
 
 	<div id="info">
 		<div style="padding: 2rem; border-right: solid 1px blue; flex: 2 1 0;">
