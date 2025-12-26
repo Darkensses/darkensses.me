@@ -7,6 +7,11 @@ body {
   font-family: "Michroma";
 }
 
+.debug {
+  border: solid 1px blue; 
+  max-width: fit-content;
+}
+
 #info {
   display: flex;  
   border: solid 1px #0000FF;
@@ -56,6 +61,7 @@ body {
   border: solid 1px red;
   flex: 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -79,4 +85,21 @@ body {
 #cover nav a {
   color: inherit;
   text-decoration: none;
+}
+
+#logotext {
+}
+
+#metadata {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 2rem;
+  font-size: 0.7rem;  
+}
+
+#metadata a {
+  color: inherit;
 }

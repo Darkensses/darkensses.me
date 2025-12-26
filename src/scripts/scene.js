@@ -32,31 +32,6 @@ camera.position.z = perspective;
  * Scene 😎
  */
 
-
-const texture = new THREE.TextureLoader().load(imgUsername.src, () => {
-  console.log('textureee');
-  //texture.minFilter = THREE.NearestFilter;
-  //texture.magFilter = THREE.NearestFilter;
-  texture.generateMipmaps = false;
-  texture.colorSpace = THREE.SRGBColorSpace;
-  const w = texture.image.width;
-  const h = texture.image.height;
-
-  console.log(w,h)
-  const geometry = new THREE.PlaneGeometry(10,10/(w/h));  
-
-  const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: true,
-    depthWrite: true
-  });
-
-  const plane = new THREE.Mesh(geometry, material);
-  plane.position.set(0, 0, 0);
-  //plane.layers.set(1)
-  //scene.add(plane);
-});
-
 const logotext = document.getElementById('logotext');
 const bounds = logotext.getBoundingClientRect();
 console.log(bounds)
@@ -66,7 +41,37 @@ const material = new THREE.MeshBasicMaterial({color: 'red', wireframe: true});
 const mesh = new THREE.Mesh(geometry, material);
 mesh.position.x = bounds.left - sizes.width/2 + bounds.width/2;
 mesh.position.y = -bounds.top + sizes.height/2 - bounds.height/2;
-scene.add(mesh)
+//scene.add(mesh)
+
+const texture = new THREE.TextureLoader().load(imgUsername.src, () => {
+  console.log('textureee');
+  //texture.minFilter = THREE.NearestFilter;
+  //texture.magFilter = THREE.NearestFilter;
+  texture.minFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  const w = texture.image.width;
+  const h = texture.image.height;
+
+  const aspect = w/h;
+
+  console.log(w,h)
+  //const geometry = new THREE.PlaneGeometry(10,10/(w/h));
+  const geometry = new THREE.PlaneGeometry(texture.image.height*aspect,texture.image.height,1);  
+
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    depthWrite: true,
+  });
+
+  const plane = new THREE.Mesh(geometry, material);
+  plane.position.x = bounds.left - sizes.width/2 + bounds.width/2;
+  plane.position.y = -bounds.top + sizes.height/2 - bounds.height/2;
+  //plane.position.set(0, 0, 0);
+  //plane.layers.set(1)
+  scene.add(plane);
+});
 
 /**
  * Sizes
