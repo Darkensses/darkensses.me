@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 
 import imgUsername from '../assets/images/text.png'
+import coolvertex from '../scripts/glsl/coolvertex.vert'
+import simplecolorFrag from '../scripts/glsl/simplecolor.frag'
 
 const canvas = document.getElementById('webgl');
 const scene = new THREE.Scene();
@@ -19,14 +21,9 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  */
 const perspective = 600;
 const fov = 2*Math.atan((sizes.height/2)/perspective) * (180/Math.PI);
-//const fov = (180 * (2 * Math.atan(sizes.height / 2 / perspective))) / Math.PI;
 const camera = new THREE.PerspectiveCamera(fov, sizes.width / sizes.height, 1, 1000);
 camera.position.z = perspective;
 //scene.add(camera);
-
-// const camera = new THREE.PerspectiveCamera( 70, sizes.width/sizes.height, 100, 2000 );
-// camera.position.z = 600;
-// camera.fov = 2*Math.atan( (sizes.height/2)/600 )* (180/Math.PI);
 
 /**
  * Scene 😎
@@ -42,6 +39,20 @@ const mesh = new THREE.Mesh(geometry, material);
 mesh.position.x = bounds.left - sizes.width/2 + bounds.width/2;
 mesh.position.y = -bounds.top + sizes.height/2 - bounds.height/2;
 //scene.add(mesh)
+
+const coolGeometry = new THREE.SphereGeometry(280,40,40)
+const coolMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: {value: 0}
+  },
+  vertexShader: coolvertex,
+  fragmentShader: simplecolorFrag,
+  side: THREE.DoubleSide,
+  wireframe: true
+});
+const coolMesh = new THREE.Mesh(coolGeometry, coolMaterial);
+coolMesh.position.z = -300;
+scene.add(coolMesh);
 
 const texture = new THREE.TextureLoader().load(imgUsername.src, () => {
   console.log('textureee');
@@ -67,7 +78,7 @@ const texture = new THREE.TextureLoader().load(imgUsername.src, () => {
 
   const plane = new THREE.Mesh(geometry, material);
   plane.position.x = bounds.left - sizes.width/2 + bounds.width/2;
-  plane.position.y = -bounds.top + sizes.height/2 - bounds.height/2;
+  plane.position.y = -bounds.top + sizes.height/2 - bounds.height/2;  
   //plane.position.set(0, 0, 0);
   //plane.layers.set(1)
   scene.add(plane);
@@ -95,6 +106,7 @@ scene.add(light);
 
 const clock = new THREE.Clock();
 const animate = () => {
+  coolMaterial.uniforms.uTime.value += 0.05;
   window.requestAnimationFrame(animate);
   renderer.render(scene, camera);
 };
