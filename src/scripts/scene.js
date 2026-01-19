@@ -6,6 +6,7 @@ import { CGAShader } from './fx/FxCGA';
 import { BadTVShader } from './shaders/BadTVShader';
 
 import GUI from 'lil-gui';
+import Lenis from 'lenis';
 
 import imgUsername from '../assets/images/text.png'
 import coolvertex from '../scripts/shaders/coolvertex.vert'
@@ -13,6 +14,16 @@ import simplecolorFrag from '../scripts/shaders/simplecolor.frag'
 
 const canvas = document.getElementById('webgl');
 const sizes = { width: window.innerWidth, height: window.innerHeight };
+// Initialize Lenis
+const lenis = new Lenis({
+  autoRaf: true,
+});
+
+// Listen for the scroll event and log the event data
+lenis.on('scroll', (e) => {
+  //console.log(lenis.progress, lenis.actualScroll, window.scrollY);
+  camera.position.y = -lenis.actualScroll; // = window.scrollY
+});
 
 /**
  * Renderer
