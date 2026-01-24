@@ -67,18 +67,37 @@ body {
 }
 
 #cover nav {
-  max-width: fit-content; 
+  /*max-width: fit-content; */
   position: absolute; 
   top:0;
   right: 0;
-  padding-right: 2rem;
+  /*padding-right: 2rem;*/
   font-size: 0.8rem;
+  border: 1px solid #fff;
+  width: 100%;
 }
 
 #cover nav ul {
   display: flex;
-  gap: 1rem;
+  /*gap: 1rem;*/
   list-style: none;
+  justify-content: space-around;
+  padding: 0.3em;
+  margin-block: 0;
+}
+
+
+#cover nav li {
+  margin: 0;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #fff;
+}
+
+#cover nav li:last-child {
+  border-right: none;
 }
 
 #cover nav a {
