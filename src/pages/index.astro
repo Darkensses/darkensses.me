@@ -33,44 +33,46 @@ import Marquee from '../components/Marquee.astro';
 		</div>
 	</div>
 
-	<div id="info">
-		<div style="padding: 2rem; border-right: solid 1px blue; flex: 2 1 0;">
-			<img src={imgMeDither.src} />
+	<section>
+		<div id="info">
+			<div class="info__image">
+				<img src={imgMeDither.src} />
+			</div>
+			<div class="info__data">
+				<div style="padding: 1rem 2rem;">
+					<span class="title">Jasiel Guillen</span>
+				</div>
+				<div class="info__meta">
+					<div class="info__birth">
+						<span>Birth year:</span>
+						<span>0x0007cc</span>
+					</div>
+					<div class="info__birth">
+						<span>Planet:</span>
+						<span>Earth</span>
+					</div>
+					<div class="info__birth">
+						<span>Race:</span>
+						<span>Human</span>
+					</div>
+				</div>
+				<p class="info__minibio">
+					A no-engineer living in northern Mexico. 
+					Specialized in Quality Assurance / test automation for over 7 years.
+					<br>
+					<br>
+					Manipulates pixels to create art, edits bytes to hack PSx graphics and constantly dreams of glitches.
+					<br>
+					<br>				
+				</p>
+				<div style="padding: 2rem;">
+					<button style="background-color: blue; padding: 1rem; width:100%; font-family: 'Michroma';">
+						Full bio
+					</button>
+				</div>
+			</div>
 		</div>
-		<div style="word-break: break-word; flex: 2 1 0;">
-			<div style="padding: 2rem;">
-				<span class="title">Jasiel Guillen</span>
-			</div>
-			<div class="info__meta">
-				<div class="info__birth">
-					<span>Birth year:</span>
-					<span>0x0007cc</span>
-				</div>
-				<div class="info__birth">
-					<span>Planet:</span>
-					<span>Earth</span>
-				</div>
-				<div class="info__birth">
-					<span>Race:</span>
-					<span>Human</span>
-				</div>
-			</div>
-			<p style="padding: 2rem; margin:0; font-size: 1.9rem;">
-				A no-engineer living in northern Mexico. 
-				Specialized in Quality Assurance / test automation for over 7 years.
-				<br>
-				<br>
-				Manipulates pixels to create art, edits bytes to hack PSx graphics and constantly dreams of glitches.
-				<br>
-				<br>				
-			</p>
-			<div style="padding: 2rem;">
-				<button style="background-color: blue; padding: 1rem; width:100%; font-family: 'Michroma';">
-					Full bio
-				</button>
-			</div>
-		</div>
-	</div>
+	</section>	
 
 	<script>
 		import '../scripts/scene.oop'
