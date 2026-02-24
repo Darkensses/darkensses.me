@@ -1,0 +1,144 @@
+---
+import imgMeGrainrad from './../assets/images/me_grainrad.jpg';
+import imgHandGrainrad from './../assets/images/hand_grainrad.jpg';
+---
+
+<style>
+
+  .card {
+    border: 1px solid blue;
+    min-width: 344px;
+    width: 640px;
+    font-size: 0.8em;
+  }
+
+  .card__title {
+    border-bottom: 1px solid blue;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5em;
+  }
+
+  .card__title p {
+    margin: 0;
+  }
+
+  .card__media {
+    display: flex;
+    border-bottom: 1px solid blue;
+  }
+
+  .card__media div { 
+    flex-grow: 1;
+    padding: 1em;
+  }
+
+  .card__media div:first-child {
+    border-right: 1px solid blue;
+  }
+
+  .card__info { 
+    display: flex;
+  }
+
+  .card__info__dummy {
+    font-family: 'Avestrava';
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-shadow: blue 2px 5px;
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+  }
+
+  .card__meta {
+    flex-grow: 1;
+    flex-direction: column;
+    font-size: 1rem;
+    font-family: "Oxanium", sans-serif;
+    font-weight: 200;
+  }
+
+  .card__meta dl {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card__meta dt {
+    background-color: blue;
+  }
+
+  .card__meta div {
+    padding: 0.2em 1em;
+  }
+
+  .card__meta dl div {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid blue;    
+  }
+
+</style>
+
+<div class="card">
+
+  <div class="card__title">
+    <p>About</p>
+    <span>&blk34;&blk14;&blk34;&blk34;</span>
+  </div>
+
+  <div class="card__media">
+    
+    <div>
+      <span>&blk34;&blk14;&blk34;&blk34;</span>
+      <img src={imgMeGrainrad.src} width="500"/>
+    </div>
+
+    <div>
+      <img src={imgHandGrainrad.src} width="300"/>
+    </div>
+
+  </div>
+
+  <div class="card__info">
+
+    <div class="card__info__dummy" style="min-width: 140px; height: auto;">
+      <span>Hello World</span>
+    </div>
+    <div class="card__meta">
+      <dl>
+
+        <div>
+          <dt>Name</dt>
+          <dd>Jasiel Guillen</dd>
+        </div>
+
+        <div>
+          <dt>Incept Date</dt>
+          <dd>0x0007cc</dd>
+        </div>
+
+        <div>
+          <dt>Location</dt>
+          <dd>Earth</dd>
+        </div>
+
+      </dl>
+
+      <div class="card__minibio">
+        A no-engineer living in northern Mexico. 
+        Specialized in Quality Assurance / test automation for over 7 years.
+        <br>
+        <br>
+        Manipulates pixels to create art, edits bytes to hack PSx graphics and constantly dreams of glitches.
+        <br>
+        <br>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>

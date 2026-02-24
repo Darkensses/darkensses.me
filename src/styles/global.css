@@ -1,6 +1,14 @@
 @import url("reset.css") layer(reset);
 @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Oxanium:wght@200..800&display=swap');
 
+@font-face {
+  font-family: 'Avestrava';
+  src: url('/fonts/Avestrava.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   background-color: rgb(0, 0, 0);
   color: #fff;
