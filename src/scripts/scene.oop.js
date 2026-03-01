@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import Lenis from 'lenis';
 
 import imgLogo from '../assets/images/text.png';
-import { EffectComposer, FXAAShader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
+import modelPsx from '../assets/models/we2002model.glb';
+import { EffectComposer, FXAAShader, GLTFLoader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
 import { CGAShader } from './fx/FxCGA';
 import { BadTVShader } from './shaders/BadTVShader';
 
@@ -28,6 +29,7 @@ export default class MainScreen {
     //this.initMesh();
     this.initGrid();
     this.addLogo();
+    this.initPsxModel();
     this.initFX();
     this.addEventListeners();
     this.animate();
@@ -176,6 +178,42 @@ export default class MainScreen {
 
       this.syncLogoToDOM();
     });
+  }
+
+  initPsxModel() {
+    const loader = new GLTFLoader();
+    loader.load(
+      modelPsx,
+      (glb) => {
+        console.log(glb)
+        glb.scene.position.z = 500;
+        glb.scene.scale.setScalar(20);
+
+        const wireframeMaterial = new THREE.MeshBasicMaterial({
+          color: 0x0000ff, // White color for the wireframe
+          wireframe: true
+        });
+        glb.scene.traverse(function (child) {
+        if (child.isMesh) {
+          // Check if the material exists and set the wireframe property to true
+          if (Array.isArray(child.material)) {
+            child.material.forEach(material => {
+              material = wireframeMaterial
+            });
+          } else if (child.material) {
+            child.material = wireframeMaterial;
+          }
+        }
+      })
+        this.scene.add(glb.scene);
+      },
+      function(xhr) {
+        console.log((xhr.loaded/xhr.total) * 100 + '% loaded');
+      },
+      function(error) {
+        console.log(error)
+      }
+    );
   }
 
   initFX() {
