@@ -20,10 +20,10 @@ body {
   max-width: fit-content;
 }
 
-section {
-  padding: 0 10rem;
-  max-width: 1536px;
-  margin: auto;
+.wrapper-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -69,8 +69,8 @@ section {
 
 @media (max-width: 680px) {  
 
-  section {
-    padding: 0;
+  .wrapper-center {
+    padding: 0 2rem;
   }
 
   .info__image, .info__data {

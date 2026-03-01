@@ -34,7 +34,7 @@ import imgHandGrainrad from './../assets/images/hand_grainrad.jpg';
     padding: 1em;
   }
 
-  .card__media div:first-child {
+  .card__media > div:first-child {
     border-right: 1px solid blue;
   }
 
@@ -51,6 +51,9 @@ import imgHandGrainrad from './../assets/images/hand_grainrad.jpg';
     display: flex;
     justify-content: center;
     align-items: center;    
+    border-left: 1px solid blue;
+    min-width: 140px; 
+    height: auto;
   }
 
   .card__meta {
@@ -80,31 +83,43 @@ import imgHandGrainrad from './../assets/images/hand_grainrad.jpg';
     border-bottom: 1px solid blue;    
   }
 
+  @media (max-width: 680px) {
+    .card__meta {
+      /*font-size: clamp(0.5rem, -0.8554rem + 6.0241vw, 3rem);*/
+      font-size: 0.75rem;
+    }
+
+    .card__info__dummy {
+      min-width:auto;
+      padding: 0.3em 0;
+    }
+  }
+
 </style>
 
 <div class="card">
 
   <div class="card__title">
     <p>About</p>
-    <span>&blk34;&blk14;&blk34;&blk34;</span>
+    <pre>[&block;&block;&block;]</pre>
   </div>
 
   <div class="card__media">
     
-    <div>
-      <span>&blk34;&blk14;&blk34;&blk34;</span>
+    <div style="width:40%;">
       <img src={imgMeGrainrad.src} width="500"/>
     </div>
 
     <div>
-      <img src={imgHandGrainrad.src} width="300"/>
+      <!-- <img src={imgHandGrainrad.src} width="300"/> -->
+       <div style="width: 100%; height: stretch; border: 1px solid blue"></div>
     </div>
 
   </div>
 
   <div class="card__info">
 
-    <div class="card__info__dummy" style="min-width: 140px; height: auto;">
+    <div class="card__info__dummy">
       <span>Hello World</span>
     </div>
     <div class="card__meta">
@@ -122,7 +137,7 @@ import imgHandGrainrad from './../assets/images/hand_grainrad.jpg';
 
         <div>
           <dt>Location</dt>
-          <dd>Earth</dd>
+          <dd style="display: flex; align-items: center;">Earth [&#9793;]</dd>
         </div>
 
       </dl>
