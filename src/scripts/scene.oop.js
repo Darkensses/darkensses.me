@@ -21,8 +21,13 @@ export default class MainScreen {
     this.mesh = null;
 
     this.logoDom = document.querySelector('#logotext h2');
+    this.scrollSeparatorDom = document.querySelector('#scroll-separator');
+    this.headerStickyDom = document.getElementById('header-sticky-wrapper');
     this.planeLogo = null;
     this.logoTexture = null;
+    
+    this.psxModel = null;
+    this.glbSize = null;
 
     this.initCamera();
     this.initRenderer();
@@ -64,8 +69,17 @@ export default class MainScreen {
     this.lenis.on('scroll', () => {
       //this.mesh.position.y = this.lenis.actualScroll * 2;
 
+      // const headerBounds = this.headerStickyDom.getBoundingClientRect();
+      // console.log(this.lenis.actualScroll, headerBounds.bottom)
+      // if(Math.floor(headerBounds.bottom) === Math.floor(10*headerBounds.height/100)) {
+      //   console.log('10% Scroll', headerBounds.bottom)
+      // }
+
+      //console.log(this.lenis.actualScroll, this.headerStickyDom.getBoundingClientRect().bottom)
+
       // If the DOM element moves with scroll, keep the plane glued to it
       this.syncLogoToDOM();
+      this.syncPsxModelToDOM();
       this.onScrollGrid(this.lenis.actualScroll)
     });
   }
@@ -82,6 +96,7 @@ export default class MainScreen {
     // Ensure layout has settled before reading bounds
     window.requestAnimationFrame(() => {
       this.syncLogoToDOM();
+      this.syncPsxModelToDOM();
     });
   }
 
@@ -110,7 +125,7 @@ export default class MainScreen {
     // this.planeLogo.position.y = -bounds.top + this.sizes.height / 2 - bounds.height / 2;
     
     //this.gridHelper.rotation.x = (10 * Math.PI / 180) + ((value*0.1) * Math.PI / 180);
-    this.gridHelper.position.z = -value*0.5;
+    //this.gridHelper.position.z = -value*0.5;
   }
 
   applyCoverUV(texture, planeW, planeH) {
@@ -180,34 +195,59 @@ export default class MainScreen {
     });
   }
 
+  syncPsxModelToDOM() {
+    if (!this.scrollSeparatorDom || !this.psxModel) return;
+
+    const bounds = this.scrollSeparatorDom.getBoundingClientRect();    
+
+    // const center = new THREE.Vector3();
+    // box.getCenter(center);
+    // this.psxModel.scene.position.sub(center);
+
+    const scale = bounds.height * 0.7 / this.glbSize.y;
+    this.psxModel.scene.scale.set(scale,scale,scale);
+    //this.psxModel.scene.position.y = -scale;
+
+    this.psxModel.scene.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
+    this.psxModel.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2)-scale;
+
+  }
+
   initPsxModel() {
     const loader = new GLTFLoader();
     loader.load(
       modelPsx,
       (glb) => {
         console.log(glb)
-        glb.scene.position.z = 500;
-        glb.scene.scale.setScalar(20);
+        this.psxModel = glb;
+
+        // calculate here, otherwise you will get jittering!
+        const box = new THREE.Box3().setFromObject(glb.scene);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        this.glbSize = size;
 
         const wireframeMaterial = new THREE.MeshBasicMaterial({
-          color: 0x0000ff, // White color for the wireframe
+          color: 0xffffff, // White color for the wireframe
           wireframe: true
         });
-        glb.scene.traverse(function (child) {
-        if (child.isMesh) {
-          // Check if the material exists and set the wireframe property to true
-          if (Array.isArray(child.material)) {
-            child.material.forEach(material => {
-              material = wireframeMaterial
-            });
-          } else if (child.material) {
-            child.material = wireframeMaterial;
+        this.psxModel.scene.traverse(function (child) {
+          if (child.isMesh) {
+            // Check if the material exists and set the wireframe property to true
+            if (Array.isArray(child.material)) {            
+              child.material.forEach(material => {
+                material = wireframeMaterial
+              });
+            } else if (child.material) {
+              child.material = wireframeMaterial;
+            }
+            child.layers.set(2)
           }
-        }
-      })
-        this.scene.add(glb.scene);
+        })
+        this.scene.add(this.psxModel.scene);
+        this.syncPsxModelToDOM();
       },
-      function(xhr) {
+      function(xhr) { // TODO: Change to THREE.LoadingManager
         console.log((xhr.loaded/xhr.total) * 100 + '% loaded');
       },
       function(error) {
@@ -231,14 +271,14 @@ export default class MainScreen {
     this.badTVPass = new ShaderPass(BadTVShader);
     this.badTVPass.uniforms.distortion.value = 0.1;
     this.badTVPass.uniforms.distortion2.value = 0.2; // 0.2 ok
-    this.badTVPass.uniforms.rollSpeed.value = 0.99; // 0.99 and remove -time2 in the shader
+    this.badTVPass.uniforms.rollSpeed.value = 1; // 0.99 and remove -time2 in the shader    
 
     const cgaPass = new ShaderPass(CGAShader);
     cgaPass.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
     cgaPass.uniforms.colDark.value = new THREE.Color('#0000ff');
     cgaPass.uniforms.colLight.value = new THREE.Color('#00a1ff');
-    cgaPass.uniforms.amount.value   = 1;
-    cgaPass.uniforms.scale.value    = 3;
+    cgaPass.uniforms.amount.value   = 1.2; // have fun here :))
+    cgaPass.uniforms.scale.value    = 3; // 1.5 for mobile
     
     const rgbShiftPass = new ShaderPass(RGBShiftShader);
     rgbShiftPass.uniforms.amount.value = 0.0015;
@@ -254,11 +294,12 @@ export default class MainScreen {
     this.composer.addPass(rgbShiftPass);
     this.composer.addPass(bloom);
 
-    this.mixPass = new ShaderPass(
+    const _mixPass = new ShaderPass(
       new THREE.ShaderMaterial({
         uniforms: {
           baseTexture: { value: null },
-          fxTexture: { value: null }
+          fxTexture: { value: null },
+          fxTexture2: { value: null }
         },
         vertexShader: `
           varying vec2 vUv;
@@ -272,14 +313,36 @@ export default class MainScreen {
 
           uniform sampler2D baseTexture;
           uniform sampler2D fxTexture;
+          uniform sampler2D fxTexture2;
 
           void main() {
-            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv);
+            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv);
           }
         `
       })
     );
+    this.mixPass = _mixPass;
     this.mixPass.needsSwap = true;
+
+    this.baseRenderTarget2 = new THREE.WebGLRenderTarget( this.sizes.width, this.sizes.height, { type: THREE.HalfFloatType } )
+    this.composer2 = new EffectComposer(this.renderer);
+    this.composer2.renderToScreen = false;
+    const cgaPass2 = new ShaderPass(CGAShader);
+    cgaPass2.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
+    cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
+    cgaPass2.uniforms.colLight.value = new THREE.Color('#00a1ff');
+    cgaPass2.uniforms.amount.value   = 1; // have fun here :))
+    cgaPass2.uniforms.scale.value    = 3; // 1.5 for mobile
+    this.badTVPass2 = new ShaderPass(BadTVShader);
+    this.badTVPass2.uniforms.distortion.value = 0.1;
+    this.badTVPass2.uniforms.distortion2.value = 0.2;
+    this.badTVPass2.uniforms.rollSpeed.value = 1; 
+    const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0, 0.0 );       
+    this.composer2.addPass(renderPass);    
+    //this.composer2.addPass(fxaaPass);
+    this.composer2.addPass(this.badTVPass2); 
+    this.composer2.addPass(cgaPass2);    
+    this.composer2.addPass(bloom2)
 
     const outputPass = new OutputPass();
     this.finalComposer = new EffectComposer(this.renderer);
@@ -292,6 +355,7 @@ export default class MainScreen {
     window.requestAnimationFrame(() => this.animate());
     //this.renderer.render(this.scene, this.camera);
     this.badTVPass.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
+    this.badTVPass2.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
 
     this.camera.layers.set(0);
     this.renderer.setRenderTarget(this.baseRenderTarget);
@@ -301,8 +365,15 @@ export default class MainScreen {
     this.camera.layers.set(1);
     this.composer.render();
 
+    this.camera.layers.set(2);
+    this.composer2.render();
+
     this.mixPass.uniforms.baseTexture.value = this.baseRenderTarget.texture;
-    this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain
+    this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain    
+    this.mixPass.uniforms.fxTexture2.value = this.composer2.readBuffer.texture;
+    
+    // this.mixPass2.uniforms.baseTexture.value = this.mixPass.uniforms.baseTexture.value;
+    // this.mixPass2.uniforms.fxTexture.value = this.composer2.readBuffer.texture; // result of FX chain
 
     this.finalComposer.render();
 

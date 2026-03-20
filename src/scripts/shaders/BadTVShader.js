@@ -90,7 +90,7 @@ export const BadTVShader = {
     offset += noise2d(vec2(yt*50.0,0.0))*distortion2*0.012;
     
     //combine distortion on X with roll on Y
-    gl_FragColor = texture2D(tDiffuse,  vec2(fract(p.x + offset),fract(p.y * rollSpeed ) ));
+    gl_FragColor = texture2D(tDiffuse,  vec2(fract(p.x + offset),fract(p.y * rollSpeed - time2) ));
 
   }
 `
