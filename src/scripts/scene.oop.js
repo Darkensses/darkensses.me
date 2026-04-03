@@ -21,11 +21,11 @@ export default class MainScreen {
     this.mesh = null;
 
     this.logoDom = document.querySelector('#logotext h2');
-    this.scrollSeparatorDom = document.querySelector('#scroll-separator');
-    this.headerStickyDom = document.getElementById('header-sticky-wrapper');
+    this.scrollSeparatorDom = document.querySelector('#model-box');
+    //this.headerStickyDom = document.getElementById('header-sticky-wrapper');
     this.planeLogo = null;
     this.logoTexture = null;
-    
+
     this.psxModel = null;
     this.glbSize = null;
 
@@ -109,10 +109,14 @@ export default class MainScreen {
   }
 
   initGrid() {
-    this.gridHelper = new THREE.GridHelper(1000,16, 0x0000FF, 0x0000FF);
-    this.gridHelper.position.z = -50;
-    this.gridHelper.rotation.x = 10 * Math.PI / 180;
-    this.scene.add(this.gridHelper);
+    //this.gridHelper = new THREE.GridHelper(1000,16, 0x0000FF, 0x0000FF);
+    const geometry = new THREE.TorusGeometry(300, 200, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 'blue', wireframe: true });
+    this.torus = new THREE.Mesh(geometry, material);
+    this.torus.rotation.x = 90*Math.PI/180;
+    this.torus.position.x = -500;
+    //this.scene.add(this.torus);
+    
   }
 
   onScrollGrid(value) {
@@ -123,7 +127,7 @@ export default class MainScreen {
 
     // this.planeLogo.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
     // this.planeLogo.position.y = -bounds.top + this.sizes.height / 2 - bounds.height / 2;
-    
+
     //this.gridHelper.rotation.x = (10 * Math.PI / 180) + ((value*0.1) * Math.PI / 180);
     //this.gridHelper.position.z = -value*0.5;
   }
@@ -161,7 +165,7 @@ export default class MainScreen {
     this.planeLogo.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
     this.planeLogo.position.y = -bounds.top + this.sizes.height / 2 - bounds.height / 2;
 
-    this.gridHelper.position.y = this.planeLogo.position.y*0.85;
+    //this.gridHelper.position.y = this.planeLogo.position.y*0.85;
 
     this.applyCoverUV(this.logoTexture, bounds.width, bounds.height);
   }
@@ -198,7 +202,7 @@ export default class MainScreen {
   syncPsxModelToDOM() {
     if (!this.scrollSeparatorDom || !this.psxModel) return;
 
-    const bounds = this.scrollSeparatorDom.getBoundingClientRect();    
+    const bounds = this.scrollSeparatorDom.getBoundingClientRect();
 
     // const center = new THREE.Vector3();
     // box.getCenter(center);
@@ -234,7 +238,7 @@ export default class MainScreen {
         this.psxModel.scene.traverse(function (child) {
           if (child.isMesh) {
             // Check if the material exists and set the wireframe property to true
-            if (Array.isArray(child.material)) {            
+            if (Array.isArray(child.material)) {
               child.material.forEach(material => {
                 material = wireframeMaterial
               });
@@ -265,13 +269,13 @@ export default class MainScreen {
     const fxaaPass = new ShaderPass(FXAAShader);
     fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );
     fxaaPass.renderToScreen = true;
-    fxaaPass.material.transparent = true;         
+    fxaaPass.material.transparent = true;
 
     // Let's use it outside >:D
     this.badTVPass = new ShaderPass(BadTVShader);
     this.badTVPass.uniforms.distortion.value = 0.1;
     this.badTVPass.uniforms.distortion2.value = 0.2; // 0.2 ok
-    this.badTVPass.uniforms.rollSpeed.value = 1; // 0.99 and remove -time2 in the shader    
+    this.badTVPass.uniforms.rollSpeed.value = 0; // 0.99 and remove -time2 in the shader
 
     const cgaPass = new ShaderPass(CGAShader);
     cgaPass.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
@@ -279,12 +283,12 @@ export default class MainScreen {
     cgaPass.uniforms.colLight.value = new THREE.Color('#00a1ff');
     cgaPass.uniforms.amount.value   = 1.2; // have fun here :))
     cgaPass.uniforms.scale.value    = 3; // 1.5 for mobile
-    
+
     const rgbShiftPass = new ShaderPass(RGBShiftShader);
-    rgbShiftPass.uniforms.amount.value = 0.0015;
+    rgbShiftPass.uniforms.amount.value = 0.0035;
     rgbShiftPass.renderToScreen = true;
     rgbShiftPass.enabled = true;
-    
+
     const bloom = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0.0, 0.0 );
 
     this.composer.addPass(renderPass);
@@ -327,27 +331,33 @@ export default class MainScreen {
     this.baseRenderTarget2 = new THREE.WebGLRenderTarget( this.sizes.width, this.sizes.height, { type: THREE.HalfFloatType } )
     this.composer2 = new EffectComposer(this.renderer);
     this.composer2.renderToScreen = false;
+    const fxaaPass2 = new ShaderPass(FXAAShader);
+    fxaaPass2.uniforms.resolution.value.set( 1 / (this.sizes.width * window.devicePixelRatio), 1 /( this.sizes.height * window.devicePixelRatio ));
+    fxaaPass2.renderToScreen = true;
+    fxaaPass2.material.transparent = true;
+    //fxaaPass2.enabled = false
     const cgaPass2 = new ShaderPass(CGAShader);
     cgaPass2.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
     cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
     cgaPass2.uniforms.colLight.value = new THREE.Color('#00a1ff');
     cgaPass2.uniforms.amount.value   = 1; // have fun here :))
-    cgaPass2.uniforms.scale.value    = 3; // 1.5 for mobile
+    cgaPass2.uniforms.scale.value    = 9; // 1.5 for mobile
     this.badTVPass2 = new ShaderPass(BadTVShader);
     this.badTVPass2.uniforms.distortion.value = 0.1;
     this.badTVPass2.uniforms.distortion2.value = 0.2;
-    this.badTVPass2.uniforms.rollSpeed.value = 1; 
-    const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0, 0.0 );       
-    this.composer2.addPass(renderPass);    
-    //this.composer2.addPass(fxaaPass);
-    this.composer2.addPass(this.badTVPass2); 
-    this.composer2.addPass(cgaPass2);    
+    this.badTVPass2.uniforms.rollSpeed.value = 0;
+    const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0.5, 0.0 );
+    this.composer2.addPass(renderPass);
+    //this.composer2.addPass(fxaaPass2);
+    this.composer2.addPass(this.badTVPass2);
+    this.composer2.addPass(cgaPass2);
     this.composer2.addPass(bloom2)
 
-    const outputPass = new OutputPass();
+
+    const outputPass = new OutputPass();    
     this.finalComposer = new EffectComposer(this.renderer);
-    this.finalComposer.addPass(renderPass);
-    this.finalComposer.addPass(this.mixPass);
+    this.finalComposer.addPass(renderPass);    
+    this.finalComposer.addPass(this.mixPass);    
     this.finalComposer.addPass(outputPass);
   }
 
@@ -369,13 +379,14 @@ export default class MainScreen {
     this.composer2.render();
 
     this.mixPass.uniforms.baseTexture.value = this.baseRenderTarget.texture;
-    this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain    
+    this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain
     this.mixPass.uniforms.fxTexture2.value = this.composer2.readBuffer.texture;
-    
+
+    this.finalComposer.render();
+
     // this.mixPass2.uniforms.baseTexture.value = this.mixPass.uniforms.baseTexture.value;
     // this.mixPass2.uniforms.fxTexture.value = this.composer2.readBuffer.texture; // result of FX chain
 
-    this.finalComposer.render();
 
     //this.renderer.clear();
     //this.composer.render();
