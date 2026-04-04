@@ -2,10 +2,14 @@ import * as THREE from 'three';
 import Lenis from 'lenis';
 
 import imgLogo from '../assets/images/text.png';
-import modelPsx from '../assets/models/we2002model.glb';
+import modelPsx from '../assets/models/we2002model_centered.glb';
 import { EffectComposer, FXAAShader, GLTFLoader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
 import { CGAShader } from './fx/FxCGA';
 import { BadTVShader } from './shaders/BadTVShader';
+
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 
 export default class MainScreen {
   constructor(options) {
@@ -29,6 +33,11 @@ export default class MainScreen {
     this.psxModel = null;
     this.glbSize = null;
 
+    // GSAP code
+    //gsap.ticker.add((time) => this.lenis.raf(time * 1000));
+    //gsap.ticker.lagSmoothing(0);
+    this.setupPsxAnimation();
+
     this.initCamera();
     this.initRenderer();
     //this.initMesh();
@@ -38,6 +47,38 @@ export default class MainScreen {
     this.initFX();
     this.addEventListeners();
     this.animate();
+  }
+
+  setupPsxAnimation() {
+    const box = document.getElementById('model-box');
+    const target = document.getElementById('model-target');
+
+    const boxRect = box.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+
+    const boxCX = boxRect.left + boxRect.width / 2;
+    const boxCY = boxRect.top + boxRect.height / 2;
+    const targetCX = targetRect.left + targetRect.width / 2;
+    const targetCY = targetRect.top + targetRect.height / 2;
+
+    const dx = targetCX - boxCX;
+    const dy = targetCY - boxCY;
+    const scale = targetRect.width / boxRect.width;
+
+    gsap.to(box, {
+      x: dx, y: dy, scale,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#scroll-separator',
+        start: 'top top',
+        end: 'bottom top',
+        pin: true,
+        scrub: 1,
+        onUpdate: (self) => {
+          this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, self.progress)
+        }
+      }
+    })
   }
 
   initCamera() {
@@ -66,21 +107,10 @@ export default class MainScreen {
   addEventListeners() {
     window.addEventListener('resize', this.onResize.bind(this));
 
-    this.lenis.on('scroll', () => {
-      //this.mesh.position.y = this.lenis.actualScroll * 2;
-
-      // const headerBounds = this.headerStickyDom.getBoundingClientRect();
-      // console.log(this.lenis.actualScroll, headerBounds.bottom)
-      // if(Math.floor(headerBounds.bottom) === Math.floor(10*headerBounds.height/100)) {
-      //   console.log('10% Scroll', headerBounds.bottom)
-      // }
-
-      //console.log(this.lenis.actualScroll, this.headerStickyDom.getBoundingClientRect().bottom)
-
-      // If the DOM element moves with scroll, keep the plane glued to it
+    this.lenis.on('scroll', () => {     
+      ScrollTrigger.update(); 
       this.syncLogoToDOM();
-      this.syncPsxModelToDOM();
-      this.onScrollGrid(this.lenis.actualScroll)
+      this.syncPsxModelToDOM();      
     });
   }
 
@@ -208,12 +238,12 @@ export default class MainScreen {
     // box.getCenter(center);
     // this.psxModel.scene.position.sub(center);
 
-    const scale = bounds.height * 0.7 / this.glbSize.y;
+    const scale = bounds.height * 1 / this.glbSize.y;
     this.psxModel.scene.scale.set(scale,scale,scale);
     //this.psxModel.scene.position.y = -scale;
 
     this.psxModel.scene.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
-    this.psxModel.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2)-scale;
+    this.psxModel.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2);
 
   }
 
@@ -336,21 +366,21 @@ export default class MainScreen {
     fxaaPass2.renderToScreen = true;
     fxaaPass2.material.transparent = true;
     //fxaaPass2.enabled = false
-    const cgaPass2 = new ShaderPass(CGAShader);
-    cgaPass2.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
-    cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
-    cgaPass2.uniforms.colLight.value = new THREE.Color('#00a1ff');
-    cgaPass2.uniforms.amount.value   = 1; // have fun here :))
-    cgaPass2.uniforms.scale.value    = 9; // 1.5 for mobile
+    this.cgaPass2 = new ShaderPass(CGAShader);
+    this.cgaPass2.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
+    this.cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
+    this.cgaPass2.uniforms.colLight.value = new THREE.Color('#00a1ff');
+    this.cgaPass2.uniforms.amount.value   = 1; // have fun here :))
+    this.cgaPass2.uniforms.scale.value    = 9; // 1.5 for mobile
     this.badTVPass2 = new ShaderPass(BadTVShader);
     this.badTVPass2.uniforms.distortion.value = 0.1;
-    this.badTVPass2.uniforms.distortion2.value = 0.2;
+    this.badTVPass2.uniforms.distortion2.value = 0.02;
     this.badTVPass2.uniforms.rollSpeed.value = 0;
     const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0.5, 0.0 );
     this.composer2.addPass(renderPass);
     //this.composer2.addPass(fxaaPass2);
     this.composer2.addPass(this.badTVPass2);
-    this.composer2.addPass(cgaPass2);
+    this.composer2.addPass(this.cgaPass2);
     this.composer2.addPass(bloom2)
 
 
