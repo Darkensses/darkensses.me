@@ -63,17 +63,18 @@ export default class MainScreen {
 
     const dx = targetCX - boxCX;
     const dy = targetCY - boxCY;
-    const scale = targetRect.width / boxRect.width;
+    const scale = targetRect.height / boxRect.height;
 
     gsap.to(box, {
       x: dx, y: dy, scale,
       ease: 'none',
       scrollTrigger: {
         trigger: '#scroll-separator',
-        start: 'top top',
-        end: 'bottom top',
-        pin: true,
+        start: 'center center',
+        end: 'bottom top+=10%',
+        //pin: true,
         scrub: 1,
+        //markers: true,
         onUpdate: (self) => {
           this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, self.progress)
         }
@@ -238,9 +239,9 @@ export default class MainScreen {
     // box.getCenter(center);
     // this.psxModel.scene.position.sub(center);
 
-    const scale = bounds.height * 1 / this.glbSize.y;
+    const scale = bounds.height * 0.8 / this.glbSize.y;
     this.psxModel.scene.scale.set(scale,scale,scale);
-    //this.psxModel.scene.position.y = -scale;
+    this.psxModel.scene.position.y = -scale;
 
     this.psxModel.scene.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
     this.psxModel.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2);
