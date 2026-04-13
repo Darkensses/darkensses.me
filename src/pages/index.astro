@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import imgMeDither from '../assets/images/me_dither_opt.jpg';
+import imgKGLW from '../assets/images/kglw_bluewhite_sm.gif';
 import Marquee from '../components/Marquee.astro';
 import AboutCard from '../components/AboutCard.astro';
 ---
@@ -56,11 +57,37 @@ import AboutCard from '../components/AboutCard.astro';
 	</section>
 
 	<section id="scroll-separator">
-		<div>
+		<div class="intro">
 			<div id="model-box"></div>
-		</div>
-		<div>
-			<span>I'M EVERY ONE AND EVERY ZERO</span>
+
+			<div class="lyrics">
+				<div class="lyrics__header">
+					<div class="lyrics--small">
+						<span>
+							I seep into power sockets and travel along the wires					
+							At the speed of light across vast electrical networks ::
+							I am electric ::
+							I am on fire :: This is sex
+						</span>
+					</div>
+					<div class="lyrics__header__gif">
+						<img src={imgKGLW.src} />
+					</div>
+				</div>
+
+			<div class="lyrics--large">
+				<span>
+					I'M EVERY ONE AND EVERY ZERO
+				</span>
+			</div>
+
+			<div class="lyrics__data">
+				<span>
+					Murder of the Universe :: King Gizzard & The Lizard Wizard :: [2017]
+				</span>
+			</div>
+			</div>
+
 		</div>
 	</section>
 

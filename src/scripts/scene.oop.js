@@ -65,21 +65,46 @@ export default class MainScreen {
     const dy = targetCY - boxCY;
     const scale = targetRect.height / boxRect.height;
 
-    gsap.to(box, {
-      x: dx, y: dy, scale,
-      ease: 'none',
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: '#scroll-separator',
-        start: 'center center',
+        start: 'top top',
         end: 'bottom top+=10%',
-        //pin: true,
-        scrub: 1,
-        //markers: true,
-        onUpdate: (self) => {
-          this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, self.progress)
-        }
+        scrub: true,
+        // markers: true,
+        // pin: true,
+        
       }
-    })
+    });
+
+    tl.to('#model-box', { y: '+=100%', ease:'power3.in'})
+      .to('#model-box', { x: '+=50%'})
+      .to('#model-box', { 
+        id: 'model-tween', x: dx, y: dy, scale, 
+        onUpdate: () => {
+          const progress = gsap.getById('model-tween').progress();
+          const eased = gsap.parseEase('power2.inOut')(progress)
+          this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, eased)
+          this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(2, -10, eased)
+        }
+      })
+
+    // gsap.to(box, {
+    //   x: dx, y: dy, scale,
+    //   ease: 'none',
+    //   scrollTrigger: {
+    //     trigger: '#scroll-separator',
+    //     start: 'center center',
+    //     end: 'bottom top+=10%',
+    //     //pin: true,
+    //     scrub: 1,
+    //     markers: true,
+    //     onUpdate: (self) => {
+    //       this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, self.progress)
+    //       this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(4, -10, self.progress)
+    //     }
+    //   }
+    // })
   }
 
   initCamera() {
@@ -263,7 +288,7 @@ export default class MainScreen {
         this.glbSize = size;
 
         const wireframeMaterial = new THREE.MeshBasicMaterial({
-          color: 0xffffff, // White color for the wireframe
+          color: 0x0000ff, // White color for the wireframe
           wireframe: true
         });
         this.psxModel.scene.traverse(function (child) {
@@ -370,8 +395,9 @@ export default class MainScreen {
     this.cgaPass2 = new ShaderPass(CGAShader);
     this.cgaPass2.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
     this.cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
-    this.cgaPass2.uniforms.colLight.value = new THREE.Color('#00a1ff');
-    this.cgaPass2.uniforms.amount.value   = 1; // have fun here :))
+    this.cgaPass2.uniforms.colLight.value = new THREE.Color('#ffffff');
+    this.cgaPass2.uniforms.colWhite.value = new THREE.Color('#0000ff');
+    this.cgaPass2.uniforms.amount.value   = 2; // have fun here :))
     this.cgaPass2.uniforms.scale.value    = 9; // 1.5 for mobile
     this.badTVPass2 = new ShaderPass(BadTVShader);
     this.badTVPass2.uniforms.distortion.value = 0.1;

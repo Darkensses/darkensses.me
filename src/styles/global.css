@@ -34,11 +34,10 @@ body {
 }
 
 #webgl {
-  z-index: -1;
   position: fixed;  
   top: 0;
   left: 0;
-  outline: none;
+  z-index: -1;
 }
 
 .header {
@@ -204,20 +203,9 @@ body {
 }
 
 #scroll-separator {
-  width: 100%;
-  height: 100dvh;
-  display: flex;
-  background-image: 
-    linear-gradient(rgba(0,0,255,0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,255,0.2) 1px, transparent 1px);    
-  background-size: 30px 30px;  
-
-  & div {
-    flex-grow: 1;
-    position: relative;
-  }
+  height: 200dvh;
  
-  & span {
+  /* & span {
     width: 100%;
     height: 100%;
     color: white;
@@ -226,10 +214,92 @@ body {
     font-weight: bold;
     position: absolute;
     mix-blend-mode: difference;
+  } */
+}
+
+.intro {
+  width: 100%;
+  height: 100dvh;
+  position: relative;
+  padding: 0 2em;
+
+}
+
+.lyrics {
+  position: absolute;
+  padding-right: inherit; 
+  width: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+}
+
+.lyrics__header {
+  display: flex;  
+  flex-direction: column;
+}
+
+.lyrics__header__gif {
+  flex-shrink: 0;
+  width: 30%;
+  height: 4em;
+  overflow: hidden;
+  border: 1px solid white;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+    display: block;
   }
 }
 
+.lyrics--small {
+  border: 1px solid white;
+  padding: 1em;
+  font-family: 'Oxanium';
+  font-weight: 100;
+  font-size: 0.6rem;
+  letter-spacing: 0.2rem;  
+  background: #0000ff;
+  max-width: 30%;
+}
+
+.lyrics--large {
+  font-size: 4rem; 
+  font-weight: bolder;
+  bottom: 0;
+}
+
+.lyrics__data {
+  font-family: 'Oxanium';
+  font-size: 0.6rem;
+  font-weight: 100;
+  font-style: italic;
+  letter-spacing: 0.2rem; 
+  color: darkgray;
+  border-top: 1px solid blue;
+}
+
 #model-box {
-  width: 100%;
+  width: 50%;
   height: 100%;
+  position: absolute;
+}
+
+#about {
+  background-image: 
+    linear-gradient(
+      to bottom,
+      black 0%,
+      transparent 20%,
+      transparent 60%,
+      black 100%
+    ),
+    conic-gradient(
+      from 90deg at 1px 1px, 
+      rgba(0, 0, 255, 0) 90deg, 
+      rgba(0, 0, 255, 0.2) 0
+    );  
+  background-size: 100% 100%, 60px 60px;
 }

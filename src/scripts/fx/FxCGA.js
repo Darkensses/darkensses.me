@@ -56,7 +56,9 @@ export const CGAShader = {
     vec4 base = texture2D( tDiffuse, vec2( sx, sy ) );
 
     float lum = .2126 * base.r + .7152 * base.g + .0722 * base.b;
-    float o = floor( 6. * lum );
+    // normalize by the actual luminance of your "white" color
+    float whiteLum = .2126 * colWhite.r + .7152 * colWhite.g + .0722 * colWhite.b;
+    float o = floor( 6. * (lum / whiteLum) );
 
     vec3 c1;
     vec3 c2;
