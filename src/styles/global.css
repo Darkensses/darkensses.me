@@ -263,6 +263,7 @@ body {
   letter-spacing: 0.2rem;  
   background: #0000ff;
   max-width: 30%;
+  text-align: justify;
 }
 
 .lyrics--large {
@@ -292,7 +293,7 @@ body {
     linear-gradient(
       to bottom,
       black 0%,
-      transparent 20%,
+      transparent 10%,
       transparent 60%,
       black 100%
     ),
