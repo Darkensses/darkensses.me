@@ -32,6 +32,7 @@ export default class MainScreen {
     this.logoTexture = null;
 
     this.psxModel = null;
+    this.mixerPsxModel = null;
     this.glbSize = null;
 
     // GSAP code
@@ -325,6 +326,9 @@ export default class MainScreen {
         })
         this.scene.add(this.psxModel.scene);
         this.syncPsxModelToDOM();
+
+        this.mixerPsxModel = new THREE.AnimationMixer(this.psxModel.scene);
+        this.mixerPsxModel.clipAction(this.psxModel.animations[0]).play();
       },
       function(xhr) { // TODO: Change to THREE.LoadingManager
         console.log((xhr.loaded/xhr.total) * 100 + '% loaded');
@@ -440,6 +444,9 @@ export default class MainScreen {
   animate() {
     window.requestAnimationFrame(() => this.animate());
     //this.renderer.render(this.scene, this.camera);
+
+    if(this.mixerPsxModel) this.mixerPsxModel.update(this.clock.getDelta()*0.9)
+
     this.badTVPass.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
     this.badTVPass2.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
 
