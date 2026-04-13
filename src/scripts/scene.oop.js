@@ -9,7 +9,8 @@ import { BadTVShader } from './shaders/BadTVShader';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-gsap.registerPlugin(ScrollTrigger);
+import { SplitText } from 'gsap/SplitText';
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default class MainScreen {
   constructor(options) {
@@ -37,6 +38,7 @@ export default class MainScreen {
     //gsap.ticker.add((time) => this.lenis.raf(time * 1000));
     //gsap.ticker.lagSmoothing(0);
     this.setupPsxAnimation();
+    this.setupTextAnimation();
 
     this.initCamera();
     this.initRenderer();
@@ -47,6 +49,23 @@ export default class MainScreen {
     this.initFX();
     this.addEventListeners();
     this.animate();
+  }
+
+  setupTextAnimation() {
+    let split = new SplitText('.lyrics--large', { type: 'chars, lines, words' });    
+    
+    gsap.from(split.chars, {
+      yPercent: 50,
+      opacity: 0,
+      stagger: 0.1,
+      ease: "expo.out",      
+      scrollTrigger: {
+        trigger: '.lyrics--large',
+        start: 'top 70%',
+        markers: true,
+        toggleActions: "play none none reverse"        
+      }
+    })
   }
 
   setupPsxAnimation() {
