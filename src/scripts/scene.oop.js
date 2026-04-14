@@ -108,23 +108,6 @@ export default class MainScreen {
           this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(2, -10, eased)
         }
       })
-
-    // gsap.to(box, {
-    //   x: dx, y: dy, scale,
-    //   ease: 'none',
-    //   scrollTrigger: {
-    //     trigger: '#scroll-separator',
-    //     start: 'center center',
-    //     end: 'bottom top+=10%',
-    //     //pin: true,
-    //     scrub: 1,
-    //     markers: true,
-    //     onUpdate: (self) => {
-    //       this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, self.progress)
-    //       this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(4, -10, self.progress)
-    //     }
-    //   }
-    // })
   }
 
   initCamera() {
@@ -193,19 +176,6 @@ export default class MainScreen {
     this.torus.position.x = -500;
     //this.scene.add(this.torus);
     
-  }
-
-  onScrollGrid(value) {
-    //const bounds = this.logoDom.getBoundingClientRect();
-
-    // Because the FOV trick, world units at z=0 map 1:1 to CSS pixels.
-    //this.planeLogo.scale.set(bounds.width, bounds.height, 1);
-
-    // this.planeLogo.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
-    // this.planeLogo.position.y = -bounds.top + this.sizes.height / 2 - bounds.height / 2;
-
-    //this.gridHelper.rotation.x = (10 * Math.PI / 180) + ((value*0.1) * Math.PI / 180);
-    //this.gridHelper.position.z = -value*0.5;
   }
 
   applyCoverUV(texture, planeW, planeH) {
