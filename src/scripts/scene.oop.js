@@ -39,7 +39,7 @@ export default class MainScreen {
     //gsap.ticker.add((time) => this.lenis.raf(time * 1000));
     //gsap.ticker.lagSmoothing(0);
     this.setupPsxAnimation();
-    this.setupTextAnimation();
+    //this.setupTextAnimation();
 
     this.initCamera();
     this.initRenderer();
@@ -63,7 +63,7 @@ export default class MainScreen {
       scrollTrigger: {
         trigger: '.lyrics--large',
         start: 'top 70%',
-        markers: true,
+        markers: false,
         toggleActions: "play none none reverse"        
       }
     })

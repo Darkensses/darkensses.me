@@ -115,8 +115,14 @@ body {
     right: 0;
     bottom: 50%;
     z-index: -1;
-    background-image: linear-gradient(rgba(0,0,255,0.6) 3px, transparent 3px), linear-gradient(90deg, rgba(0,0,255,0.6) 3px, transparent 3px);
-    background-size: 100px 100px;
+    /* background-image: linear-gradient(rgba(0,0,255,0.6) 3px, transparent 3px), linear-gradient(90deg, rgba(0,0,255,0.6) 3px, transparent 3px);
+    background-size: 100px 100px; */
+    background-image:
+  url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'60'%20height%3D'60'%20viewBox%3D'0%200%2060%2060'%3E%3Cline%20x1%3D'30'%20y1%3D'23'%20x2%3D'30'%20y2%3D'37'%20stroke%3D'rgba(0%2C0%2C255%2C1)'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%2F%3E%3Cline%20x1%3D'23'%20y1%3D'30'%20x2%3D'37'%20y2%3D'30'%20stroke%3D'rgba(0%2C0%2C255%2C1)'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%2F%3E%3C%2Fsvg%3E"),
+  conic-gradient(from 90deg at 1.5px 1.5px, transparent 90deg, rgba(0,0,255,0.4) 0);
+background-size: 60px 60px, 60px 60px;
+background-position: 30px 30px, 0 0;
+background-repeat: repeat, repeat;
     transform: perspective(666px) rotateX(-60deg);
     transform-origin: center top;    
     backface-visibility: hidden;
@@ -130,8 +136,14 @@ body {
     right: 0;
     bottom: 0;
     z-index: -1;
-    background-image: linear-gradient(rgba(0,0,255,0.6) 3px, transparent 3px), linear-gradient(90deg, rgba(0,0,255,0.6) 3px, transparent 3px);
-    background-size: 100px 100px;
+    /* background-image: linear-gradient(rgba(0,0,255,0.6) 3px, transparent 3px), linear-gradient(90deg, rgba(0,0,255,0.6) 3px, transparent 3px);
+    background-size: 100px 100px; */
+    background-image:
+  url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'60'%20height%3D'60'%20viewBox%3D'0%200%2060%2060'%3E%3Cline%20x1%3D'30'%20y1%3D'23'%20x2%3D'30'%20y2%3D'37'%20stroke%3D'rgba(0%2C0%2C255%2C1)'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%2F%3E%3Cline%20x1%3D'23'%20y1%3D'30'%20x2%3D'37'%20y2%3D'30'%20stroke%3D'rgba(0%2C0%2C255%2C1)'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%2F%3E%3C%2Fsvg%3E"),
+  conic-gradient(from 90deg at 1.5px 1.5px, transparent 90deg, rgba(0,0,255,0.4) 0);
+background-size: 60px 60px, 60px 60px;
+background-position: 30px 30px, 0 0;
+background-repeat: repeat, repeat;
     transform: perspective(666px) rotateX(60deg);
     transform-origin: center bottom;    
     backface-visibility: hidden;
@@ -203,73 +215,137 @@ body {
 }
 
 #scroll-separator {
-  height: 200dvh;
- 
-  /* & span {
-    width: 100%;
-    height: 100%;
-    color: white;
-    font-family: 'Michroma';
-    font-size: 4rem;
-    font-weight: bold;
-    position: absolute;
-    mix-blend-mode: difference;
-  } */
+  height: 250dvh;
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'120'%20height%3D'120'%20viewBox%3D'0%200%20120%20120'%3E%3Cline%20x1%3D'60'%20y1%3D'55'%20x2%3D'60'%20y2%3D'65'%20stroke%3D'rgba(0%2C0%2C255%2C0.5)'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%2F%3E%3Cline%20x1%3D'55'%20y1%3D'60'%20x2%3D'65'%20y2%3D'60'%20stroke%3D'rgba(0%2C0%2C255%2C0.5)'%20stroke-width%3D'1.5'%20stroke-linecap%3D'round'%2F%3E%3C%2Fsvg%3E"),
+    conic-gradient(from 90deg at 1px 1px, transparent 90deg, rgba(0,0,255,0.2) 0);
+  background-size: 120px 120px, 60px 60px;
+  background-position: 60px 60px, 0 0;
+  background-repeat: repeat, repeat;
+mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
 }
 
 .intro {
   width: 100%;
   height: 100dvh;
   position: relative;
+  margin-top: 2em;
   padding: 0 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+}
 
+.intro__model {  
+  display: flex;
+  min-width: 33.3%;
+  height: 80%;
+}
+
+.bracketbox {
+  display: flex;
+  width: 100%;
+}
+
+.bracketbox__container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: '';
+    height: 100%;
+    width: 30px;
+    border: 1px solid blue;
+    position: absolute;
+    top: 0;
+  }
+  &:before {
+    border-right: 0;
+  }
+  &:after {
+    border-left: 0;
+    right: 0;
+    left: auto;
+  }
+}
+
+.bracketbox__info {
+  background-color: #0000ff;
+  width: 100%;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  width: fit-content;
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  font-family: 'Oxanium';
+  font-size: 0.8rem;
+  font-weight: 100;
+}
+
+#model-box {
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 
 .lyrics {
-  position: absolute;
-  padding-right: inherit; 
-  width: 50%;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 0;
+  width: 40%;
 }
 
 .lyrics__header {
   display: flex;  
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;  
+  border: 1px solid blue;
 }
 
 .lyrics__header__gif {
   flex-shrink: 0;
-  width: 30%;
-  height: 4em;
+  height: 6em;
+  width: 50%;  
   overflow: hidden;
-  border: 1px solid white;
+  /* border: 1px solid white; */
+  border-left: 1px solid blue;
+  position: relative;
 
   & img {
     width: 100%;
     height: 100%;
-    object-fit:cover;
+    object-fit:contain;
     display: block;
+    position: absolute;    
   }
 }
 
+.lyrics__gif--overlay {
+  /* background: blue; */
+  width: 100%;
+  height: 100%;
+  mix-blend-mode:darken;
+}
+
 .lyrics--small {
-  border: 1px solid white;
-  padding: 1em;
+  /* border: 1px solid white; */
   font-family: 'Oxanium';
   font-weight: 100;
-  font-size: 0.6rem;
-  letter-spacing: 0.2rem;  
-  background: #0000ff;
-  max-width: 30%;
-  text-align: justify;
+  font-size: 0.55rem;
+  letter-spacing: 0.15rem;  
+  width: 50%;
+  padding: 1rem;
+  /* background: #0000ff; */
 }
 
 .lyrics--large {
-  font-size: 4rem; 
+  font-size: 2.5rem; 
   font-weight: bolder;
-  bottom: 0;
+}
+
+.lyrics__text {
+  padding: 1rem;
 }
 
 .lyrics__data {
@@ -280,12 +356,6 @@ body {
   letter-spacing: 0.2rem; 
   color: darkgray;
   border-top: 1px solid blue;
-}
-
-#model-box {
-  width: 50%;
-  height: 100%;
-  position: absolute;
 }
 
 #about {
@@ -303,4 +373,13 @@ body {
       rgba(0, 0, 255, 0.2) 0
     );  
   background-size: 100% 100%, 60px 60px;
+  padding-bottom: 4em;
+}
+
+#art {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
