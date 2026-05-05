@@ -72,42 +72,50 @@ export default class MainScreen {
   setupPsxAnimation() {
     const box = document.getElementById('model-box');
     const target = document.getElementById('model-target');
+    
+    let dx, dy, scale;
 
-    const boxRect = box.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
+    const calculate = () => {
+      // clear transforms to mesure the original position
+      gsap.set(box, { clearProps: 'transform' });
+      
+      const boxRect = box.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      
+      dx = (targetRect.left + targetRect.width / 2) - (boxRect.left + boxRect.width / 2);
+      dy = (targetRect.top + targetRect.height / 2) - (boxRect.top + boxRect.height / 2);
+      scale = targetRect.height / boxRect.height;
+    };
 
-    const boxCX = boxRect.left + boxRect.width / 2;
-    const boxCY = boxRect.top + boxRect.height / 2;
-    const targetCX = targetRect.left + targetRect.width / 2;
-    const targetCY = targetRect.top + targetRect.height / 2;
-
-    const dx = targetCX - boxCX;
-    const dy = targetCY - boxCY;
-    const scale = targetRect.height / boxRect.height;
+    calculate();
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: '#scroll-separator',
+        trigger: '.bracketbox',        
         start: 'top top',
-        end: 'bottom top+=10%',
-        scrub: true,
-        // markers: true,
-        // pin: true,
-        
+        endTrigger: '#about',
+        end: 'top top+=10%',
+        scrub: true,  
+        invalidateOnRefresh: true, // clears start values on ScrollTrigger.refresh()
+        onRefreshInit: calculate,  // triggered immediately before ScrollTrigger recalculates the positions
       }
     });
 
-    tl.to('#model-box', { y: '+=100%', ease:'power3.in'})
-      .to('#model-box', { x: '+=50%'})
-      .to('#model-box', { 
-        id: 'model-tween', x: dx, y: dy, scale, 
+    tl
+      .to('#model-box', { y: '+=100%', duration: 1 })      
+      .to('#model-box', {  
+        duration: 2,    
+        id: 'model-tween',
+        x: () => dx,
+        y: () => dy,
+        scale: () => scale,
         onUpdate: () => {
           const progress = gsap.getById('model-tween').progress();
-          const eased = gsap.parseEase('power2.inOut')(progress)
-          this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, eased)
-          this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(2, -10, eased)
+          const eased = gsap.parseEase('power2.inOut')(progress);
+          this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, eased);
+          this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(2, -10, eased);
         }
-      })
+      });
   }
 
   initCamera() {
@@ -150,10 +158,12 @@ export default class MainScreen {
     this.updateCamera();
 
     this.renderer.setSize(this.sizes.width, this.sizes.height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    //this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // Ensure layout has settled before reading bounds
     window.requestAnimationFrame(() => {
+      if (this.lenis) this.lenis.resize();
+      ScrollTrigger.refresh();
       this.syncLogoToDOM();
       this.syncPsxModelToDOM();
     });
@@ -256,7 +266,7 @@ export default class MainScreen {
 
     const scale = bounds.height * 0.8 / this.glbSize.y;
     this.psxModel.scene.scale.set(scale,scale,scale);
-    this.psxModel.scene.position.y = -scale;
+    //this.psxModel.scene.position.y = -scale;
 
     this.psxModel.scene.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
     this.psxModel.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2);
