@@ -231,16 +231,24 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   position: relative;
   margin-top: 2em;
   padding: 0 2em;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 33.3% 40%; 
+  grid-template-rows: 1fr auto auto auto 1fr; 
+  grid-template-areas:
+    "a ."  
+    "a b1"
+    "a b2"
+    "a b3"
+    "a .";
+  column-gap: 2em;
   justify-content: center;
-  gap: 2em;
 }
 
 .intro__model {  
   display: flex;
-  min-width: 33.3%;
   height: 80%;
+  grid-area: a;
+  align-self: center;
 }
 
 .bracketbox {
@@ -292,15 +300,12 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   position: absolute;
 }
 
-.lyrics {
-  width: 40%;
-}
-
 .lyrics__header {
   display: flex;  
   flex-direction: row;
   align-items: center;  
   border: 1px solid blue;
+  grid-area: b1;
 }
 
 .lyrics__header__gif {
@@ -336,12 +341,13 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   letter-spacing: 0.15rem;  
   width: 50%;
   padding: 1rem;
-  /* background: #0000ff; */
+  /* background: #0000ff; */  
 }
 
 .lyrics--large {
   font-size: 2.5rem; 
   font-weight: bolder;
+  grid-area: b2;
 }
 
 .lyrics__text {
@@ -356,6 +362,7 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   letter-spacing: 0.2rem; 
   color: darkgray;
   border-top: 1px solid blue;
+  grid-area: b3;
 }
 
 #about {
