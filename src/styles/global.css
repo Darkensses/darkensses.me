@@ -222,7 +222,6 @@ background-repeat: repeat, repeat;
   background-size: 120px 120px, 60px 60px;
   background-position: 60px 60px, 0 0;
   background-repeat: repeat, repeat;
-mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
 }
 
 .intro {
@@ -232,7 +231,7 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   margin-top: 2em;
   padding: 0 2em;
   display: grid;
-  grid-template-columns: 33.3% 40%; 
+  grid-template-columns: 33.3% clamp(40%, 600px, 60%);
   grid-template-rows: 1fr auto auto auto 1fr; 
   grid-template-areas:
     "a ."  
@@ -246,7 +245,7 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
 
 .intro__model {  
   display: flex;
-  height: 80%;
+  height: 80%;  
   grid-area: a;
   align-self: center;
 }
@@ -306,6 +305,7 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   align-items: center;  
   border: 1px solid blue;
   grid-area: b1;
+  text-wrap: balance;
 }
 
 .lyrics__header__gif {
@@ -316,10 +316,12 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   /* border: 1px solid white; */
   border-left: 1px solid blue;
   position: relative;
+  display: flex;
+  align-items: center;
 
   & img {
     width: 100%;
-    height: 100%;
+    height: 100%; 
     object-fit:contain;
     display: block;
     position: absolute;    
@@ -337,7 +339,7 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   /* border: 1px solid white; */
   font-family: 'Oxanium';
   font-weight: 100;
-  font-size: 0.55rem;
+  font-size: clamp(0.45rem,1vw + 1rem,0.55rem);
   letter-spacing: 0.15rem;  
   width: 50%;
   padding: 1rem;
@@ -359,10 +361,49 @@ mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
   font-size: 0.6rem;
   font-weight: 100;
   font-style: italic;
-  letter-spacing: 0.2rem; 
+  letter-spacing: 0.1rem; 
   color: darkgray;
   border-top: 1px solid blue;
   grid-area: b3;
+}
+
+@media (max-width: 720px) {
+  .intro {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 80% auto auto; 
+    grid-template-areas:
+    "b1"
+    "a"
+    "b2"
+    "b3";
+    row-gap: 1em;
+  }  
+
+  .lyrics--small {
+    padding: 1em;
+    font-size: 0.4rem;
+  }
+
+  .lyrics__header__gif {
+    height: 3em;
+  }
+
+  .intro__model {
+    height: 100%;
+  }
+
+  .lyrics__text {
+    padding: 0;
+  }
+
+  .lyrics--large {
+    font-size: 1.5rem;
+  }
+
+  .lyrics__data {
+    font-size: 0.4rem;
+  }
 }
 
 #about {
