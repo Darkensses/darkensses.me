@@ -1,6 +1,13 @@
 @import url("reset.css") layer(reset);
 @import url('https://fonts.googleapis.com/css2?family=Michroma&family=Oxanium:wght@200..800&family=Share+Tech+Mono&display=swap');
 
+:root {
+  --min-vw: 360px;
+  --color-blue: #0000FF;
+  --color-green: #00FF00;
+  --color-red: #FF0000;
+}
+
 @font-face {
   font-family: 'Avestrava';
   src: url('/fonts/Avestrava.ttf');
@@ -243,16 +250,14 @@ background-repeat: repeat, repeat;
   justify-content: center;
 }
 
-.intro__model {  
+.bracketbox {
   display: flex;
+  min-width: var(--min-vw);
+  width: 100%;
+  max-width: 420px;
   height: 80%;  
   grid-area: a;
   align-self: center;
-}
-
-.bracketbox {
-  display: flex;
-  width: 100%;
 }
 
 .bracketbox__container {
@@ -299,7 +304,7 @@ background-repeat: repeat, repeat;
   position: absolute;
 }
 
-.lyrics__header {
+.lyrics__top {
   display: flex;  
   flex-direction: row;
   align-items: center;  
@@ -308,7 +313,7 @@ background-repeat: repeat, repeat;
   text-wrap: balance;
 }
 
-.lyrics__header__gif {
+.lyrics__gif {
   flex-shrink: 0;
   height: 6em;
   width: 50%;  
@@ -346,17 +351,17 @@ background-repeat: repeat, repeat;
   /* background: #0000ff; */  
 }
 
-.lyrics--large {
-  font-size: 2.5rem; 
-  font-weight: bolder;
+.lyrics__middle {  
   grid-area: b2;
 }
 
-.lyrics__text {
+.lyrics--large {
   padding: 1rem;
+  font-size: 2.5rem; 
+  font-weight: bolder;    
 }
 
-.lyrics__data {
+.lyrics__info {
   font-family: 'Oxanium';
   font-size: 0.6rem;
   font-weight: 100;
@@ -371,37 +376,36 @@ background-repeat: repeat, repeat;
   .intro {
     height: auto;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 80% auto auto; 
+    grid-template-rows: auto auto 100% auto auto; 
     grid-template-areas:
+    "."
     "b1"
     "a"
     "b2"
     "b3";
     row-gap: 1em;
-  }  
+  }
+  
+  .bracketbox {
+    justify-self: center;
+    height: 100%;
+  }
 
   .lyrics--small {
     padding: 1em;
     font-size: 0.4rem;
   }
 
-  .lyrics__header__gif {
+  .lyrics__gif {
     height: 3em;
   }
 
-  .intro__model {
-    height: 100%;
-  }
-
-  .lyrics__text {
-    padding: 0;
-  }
-
   .lyrics--large {
-    font-size: 1.5rem;
+    padding: 0;
+    font-size: 1.25rem;
   }
 
-  .lyrics__data {
+  .lyrics__info {
     font-size: 0.4rem;
   }
 }
