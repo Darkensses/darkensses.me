@@ -37,30 +37,33 @@ const {text, separator} = Astro.props;
   }
 </style>
 
-<div class="marquee" id="marquee">
+<div class="marquee" data-id="marquee">
   <div class="marquee__track">
-    <div class="marquee__group" id="mg1">
+    <div class="marquee__group" data-id="mg1">
       <span>{text}</span>
       <span style="font-size: 1.2rem;">{separator}</span>
     </div>
-    <div class="marquee__group" id="mg2" aria-hidden="true"></div>
+    <div class="marquee__group" data-id="mg2" aria-hidden="true"></div>
   </div>
 </div>
 
 <script>
   // @ts-nocheck
-  function Marquee(selector) {
-    const parentSelector = document.querySelector('#marquee');
-    const group1 = document.querySelector('#mg1');
-    const group2 = document.querySelector('#mg2');
+  function Marquee() {
+    const marquees = document.querySelectorAll('[data-id=marquee]');
 
-    const clone = group1.innerHTML;
-    
-    while(group1.scrollWidth < parentSelector.clientWidth) {
-      group1.insertAdjacentHTML('beforeend', clone);    
-    }
-    
-    group2.innerHTML = group1.innerHTML;
+    for(let marquee of marquees) {
+      const group1 = marquee.querySelector('[data-id=mg1]');
+      const group2 = marquee.querySelector('[data-id=mg2]');
+
+      const clone = group1.innerHTML;
+      
+      while(group1.scrollWidth < marquee.clientWidth) {
+        group1.insertAdjacentHTML('beforeend', clone);    
+      }
+      
+      group2.innerHTML = group1.innerHTML;
+    }    
 
   }
 
