@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import imgKGLW from '../assets/images/kglw_white_transparent.gif';
+import machinerylogo from '../assets/images/virginmary.webp';
 import Marquee from '../components/Marquee.astro';
 import AboutCard from '../components/AboutCard.astro';
 import HorizontalScroll from '../components/HorizontalScroll.astro';
@@ -97,6 +98,21 @@ import HorizontalScroll from '../components/HorizontalScroll.astro';
 			
 
 		</div>
+
+		<div class="divine">
+			<Marquee text="Get Blessed" separator="&#10014;" />			
+			<div class="divine__text">
+				<span>Divine Machinery</span>
+			</div>
+			<div class="machinery">				
+			</div>			
+
+			<canvas id="asciigrid"></canvas>
+
+			<div class="machinery__logo">
+				<img src={machinerylogo.src} id="asciiImg"/>
+			</div>
+		</div>
 	</section>
 
 	<section id="about" class="wrapper-center">
@@ -112,5 +128,6 @@ import HorizontalScroll from '../components/HorizontalScroll.astro';
 
 	<script>
 		import '../scripts/scene.oop'
+		import '../scripts/asciigrid.js'
 	</script>
 </Layout>
