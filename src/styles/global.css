@@ -237,7 +237,7 @@ background-repeat: repeat, repeat;
   width: 100%;
   height: 100dvh;
   position: relative;
-  margin-top: 2em;
+  margin: 2em 0;
   padding: 0 2em;
   display: grid;
   grid-template-columns: 33.3% clamp(40%, 600px, 60%);
@@ -376,21 +376,20 @@ background-repeat: repeat, repeat;
 
 @media (width < 64rem) {
   .intro {
-    height: auto;
+    height: 100dvh;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto 100% auto auto; 
+    grid-template-rows: auto auto 1fr auto auto; 
     grid-template-areas:
     "."
     "b1"
     "a"
     "b2"
     "b3";
-    row-gap: 1em;
+    row-gap: 0em;
   }
   
-  .bracketbox {
+  .bracketbox {    
     justify-self: center;
-    height: 100%;
   }
 
   .lyrics--small {
