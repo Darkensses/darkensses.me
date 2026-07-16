@@ -75,3 +75,50 @@ const images = await Promise.all(
   </div>
 
 </div>
+
+<script>
+  // @ts-nocheck    
+  import { lenis } from "../scripts/lenis";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  // taken from https://github.com/Hank-D-Tank/awwwards-horizontal-scroll/blob/main/index.html
+  // nice tutorial here: https://www.youtube.com/watch?v=VfYcSToxlE0
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    // lenis.on("scroll", ScrollTrigger.update);
+    // gsap.ticker.add((time) => {
+    //   lenis.raf(time*1000);
+    // });
+    // gsap.ticker.lagSmoothing(0);
+
+    const scrollContainer = document.querySelector('.hscroll__container');
+    const section = document.querySelector('#art');
+
+    function initHorizontalScroll() {
+
+      function getScrollAmount() {
+        const scrollWidth = scrollContainer.scrollWidth;
+        const windowWidth = window.innerWidth;
+
+        return -(scrollWidth - windowWidth);
+      }
+
+      gsap.to(scrollContainer, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          pin: true,
+          start: "top top",
+          end: () => `+=${-getScrollAmount()}`,
+          scrub: true,
+          invalidateOnRefresh: true,
+          // onUpdate TODO
+        }
+      });
+    }
+    initHorizontalScroll();
+  })
+
+</script>
