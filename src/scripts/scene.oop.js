@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import Lenis from 'lenis';
-
+import { lenis } from './lenis';
 import imgLogo from '../assets/images/text.png';
 import modelPsx from '../assets/models/we2002model_centered.glb';
 import { EffectComposer, FXAAShader, GLTFLoader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
@@ -10,6 +9,7 @@ import { BadTVShader } from './shaders/BadTVShader';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default class MainScreen {
@@ -19,7 +19,7 @@ export default class MainScreen {
     this.clock = new THREE.Clock();
 
     this.scene = new THREE.Scene();
-    this.lenis = new Lenis({ autoRaf: true });
+    this.lenis = lenis
 
     this.perspective = 600;
 
