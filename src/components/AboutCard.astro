@@ -1,0 +1,210 @@
+---
+import imgMeGrainrad from './../assets/images/me_grainrad.jpg';
+---
+
+<style>
+
+  .card {
+    border: 1px solid blue;
+    min-width: 344px;
+    width: 640px;
+    font-size: 0.8em;
+  }
+
+  .card__title {
+    border-bottom: 1px solid blue;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5em;
+  }
+
+  .card__title p {
+    margin: 0;
+  }
+
+  .card__media {
+    display: flex;
+    border-bottom: 1px solid blue;
+  }
+
+  .card__media div { 
+    flex-grow: 1;
+    padding: 1em;
+  }
+
+  .card__media > div:first-child {
+    border-right: 1px solid blue;
+  }
+
+  .card__info { 
+    display: flex;
+  }
+
+  .card__info__dummy {
+    font-family: 'Avestrava';
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-shadow: blue 2px 5px;
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    border-left: 1px solid blue;
+    min-width: 140px; 
+    height: auto;
+  }
+
+  .card__meta {
+    flex-grow: 1;
+    flex-direction: column;
+    /* font-size: 1rem; */
+    font-size: clamp(0.5rem, calc(2vw + 0rem), 1rem);
+    font-family: "Oxanium", sans-serif;
+    font-weight: 200;
+  }
+
+  .card__meta dl {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card__meta dt {
+    background-color: blue;
+    padding-left: 1em;
+  }
+
+  .card__meta dd {
+    padding-left: 1em;
+  }
+  
+
+  .card__minibio {
+    padding: 0.2em 1em;
+  }
+
+  .card__actions {
+    display: flex;
+    width: 100%;
+    padding-bottom: 1em;
+  }
+
+  .card__button {
+    text-decoration: none;
+    color: white;
+    border: 1px solid var(--color-blue);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 1px solid transparent;
+    outline-offset: 0em;
+    transition: all 0.5s linear;
+  }
+
+  .card__button:hover {
+    outline-color: var(--color-blue);
+    outline-offset: 0.5em;
+    background-color: var(--color-blue);
+  }
+
+  .card__meta dl > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-between;
+    border-bottom: 1px solid blue;  
+    padding: 0.2em 0;  
+  }
+
+  @media (max-width: 680px) {
+    /* .card__meta {
+      font-size: clamp(0.5rem, -0.8554rem + 6.0241vw, 3rem);
+      font-size: 0.7rem;
+    } */
+
+    .card__info__dummy {
+      min-width:auto;
+      padding: 0.3em 0;
+    }
+  }
+
+</style>
+
+<div class="card">
+
+  <div class="card__title">
+    <p>About</p>
+    <pre>[&block;&block;&block;]</pre>
+  </div>
+
+  <div class="card__media">
+    
+    <div style="width:40%;">
+      <img src={imgMeGrainrad.src} width="500"/>
+    </div>
+
+    <div>
+      <!-- <img src={imgHandGrainrad.src} width="300"/> -->
+       <div id="model-target" style="width: 100%; height: stretch; border: 1px solid blue"></div>
+    </div>
+
+  </div>
+
+  <div class="card__info">
+
+    <div class="card__info__dummy">
+      <span>Hello World</span>
+    </div>
+    <div class="card__meta">
+      <dl>
+
+        <div>
+          <dt>Name</dt>
+          <dd>Jasiel Guillen</dd>
+        </div>
+
+        <div>
+          <dt>Incept Date</dt>
+          <dd>0x0007cc</dd>
+        </div>
+
+        <div>
+          <dt>Location</dt>
+          <dd style="display: flex; align-items: center;">Earth [&#9793;]</dd>
+        </div>
+
+        <div>
+          <dt>Role</dt>
+          <dd>Bug Hunter</dd>
+        </div>
+
+        <div>
+          <dt>Skills</dt>
+          <dd>glsl, js</dd>
+        </div>
+
+        <div>
+          <dt>Strength</dt>
+          <dd>&#9733;&#9733;&#9733;&#9733;&#9734;</dd>
+        </div>
+
+      </dl>
+
+      <div class="card__minibio">
+        A no-engineer living in northern Mexico. 
+        Specialized in Quality Assurance / test automation for over 7 years.
+        <br>
+        <br>
+        Manipulates pixels to create art, edits bytes to hack PSx graphics and constantly dreams of glitches.
+        <br>
+        <br>
+        <div class="card__actions">
+          <a class="card__button" href="#">FULL BIO</a>
+        </div>
+      </div>      
+    </div>
+
+  </div>
+
+
+</div>
