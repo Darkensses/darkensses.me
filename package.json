@@ -1,52 +1,23 @@
 {
-  "name": "darkensses.me",
-  "private": true,
-  "description": "Jasiel Guillen's blog",
-  "version": "0.1.0",
-  "author": "Jasiel Guillen <darkensses@gmail.com>",
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.34",
-    "@fortawesome/free-brands-svg-icons": "^5.15.2",
-    "@fortawesome/free-solid-svg-icons": "^5.15.2",
-    "@fortawesome/react-fontawesome": "^0.1.14",
-    "@react-three/drei": "^3.1.0",
-    "gatsby": "^2.26.1",
-    "gatsby-image": "^2.5.0",
-    "gatsby-plugin-manifest": "^2.6.1",
-    "gatsby-plugin-offline": "^3.4.0",
-    "gatsby-plugin-react-helmet": "^3.4.0",
-    "gatsby-plugin-sharp": "^2.8.0",
-    "gatsby-source-filesystem": "^2.5.0",
-    "gatsby-transformer-sharp": "^2.6.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-helmet": "^6.1.0",
-    "react-responsive": "^8.2.0",
-    "react-three-fiber": "^5.3.18",
-    "three": "^0.125.2"
+    "astro": "^6.4.8",
+    "astro-tunnel": "^0.1.9",
+    "gsap": "^3.14.2",
+    "lenis": "^1.3.17",
+    "three": "^0.181.2"
   },
   "devDependencies": {
-    "prettier": "2.2.1"
-  },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "0BSD",
-  "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "start": "npm run develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Darkensses/darkensses.me"
-  },
-  "bugs": {
-    "url": "https://github.com/Darkensses/darkensses.me"
+    "@types/three": "^0.181.0",
+    "lil-gui": "^0.21.0",
+    "vite-plugin-glsl": "^1.5.5"
   }
 }

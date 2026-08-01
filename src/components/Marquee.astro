@@ -1,0 +1,73 @@
+---
+const {text, separator} = Astro.props;
+---
+
+<style>
+  .marquee {
+    width: 100%;
+    height: 36px;
+    background-color: #0000FF;
+    display: flex;
+    color: #FFF;
+    font-family: "Michroma", sans-serif;
+    font-weight: 400;
+    font-style: normal;  
+    font-size: 0.8rem;
+    overflow: hidden;  
+  }
+
+  .marquee__track{
+    display: inline-flex;
+    will-change: transform;
+    animation: marquee-animation 25s linear infinite;
+  }
+
+  .marquee__group {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    gap: 1rem;
+    flex-shrink: 0;
+    padding-right: 1rem;
+  }
+
+  @keyframes marquee-animation {
+    from { transform: translateX(0%); }
+    to { transform: translateX(-50%); }
+  }
+</style>
+
+<div class="marquee" data-id="marquee">
+  <div class="marquee__track">
+    <div class="marquee__group" data-id="mg1">
+      <span>{text}</span>
+      <span style="font-size: 1.2rem;">{separator}</span>
+    </div>
+    <div class="marquee__group" data-id="mg2" aria-hidden="true"></div>
+  </div>
+</div>
+
+<script>
+  // @ts-nocheck
+  function Marquee() {
+    const marquees = document.querySelectorAll('[data-id=marquee]');
+
+    for(let marquee of marquees) {
+      const group1 = marquee.querySelector('[data-id=mg1]');
+      const group2 = marquee.querySelector('[data-id=mg2]');
+
+      const clone = group1.innerHTML;
+      
+      while(group1.scrollWidth < marquee.clientWidth) {
+        group1.insertAdjacentHTML('beforeend', clone);    
+      }
+      
+      group2.innerHTML = group1.innerHTML;
+    }    
+
+  }
+
+  window.addEventListener('load', Marquee);
+  let t;
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(Marquee, 120); })
+</script>
