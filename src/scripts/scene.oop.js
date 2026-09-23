@@ -26,7 +26,7 @@ export default class MainScreen {
     this.mesh = null;
 
     this.logoDom = document.querySelector('#logotext h2');
-    this.scrollSeparatorDom = document.querySelector('#model-box');
+    this.scrollSeparatorDom = document.querySelector('#model-target');
     //this.headerStickyDom = document.getElementById('header-sticky-wrapper');
     this.planeLogo = null;
     this.logoTexture = null;
@@ -38,7 +38,7 @@ export default class MainScreen {
     // GSAP code
     //gsap.ticker.add((time) => this.lenis.raf(time * 1000));
     //gsap.ticker.lagSmoothing(0);
-    this.setupPsxAnimation();
+    
     //this.setupTextAnimation();
 
     this.initCamera();
@@ -69,54 +69,6 @@ export default class MainScreen {
     })
   }
 
-  setupPsxAnimation() {
-    const box = document.getElementById('model-box');
-    const target = document.getElementById('model-target');
-    
-    let dx, dy, scale;
-
-    const calculate = () => {
-      // clear transforms to mesure the original position
-      gsap.set(box, { clearProps: 'transform' });
-      
-      const boxRect = box.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      
-      dx = (targetRect.left + targetRect.width / 2) - (boxRect.left + boxRect.width / 2);
-      dy = (targetRect.top + targetRect.height / 2) - (boxRect.top + boxRect.height / 2);
-      scale = targetRect.height / boxRect.height;
-    };
-
-    calculate();
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.bracketbox',        
-        start: 'top top',
-        endTrigger: '#about',
-        end: 'top top+=10%',
-        scrub: true,  
-        invalidateOnRefresh: true, // clears start values on ScrollTrigger.refresh()
-        onRefreshInit: calculate,  // triggered immediately before ScrollTrigger recalculates the positions
-      }
-    });
-
-    tl
-      .to('#model-box', { y: '+=100%', duration: 1 })      
-      .to('#model-box', {  
-        duration: 2,    
-        id: 'model-tween',
-        x: () => dx,
-        y: () => dy,
-        scale: () => scale,
-        onUpdate: () => {
-          const progress = gsap.getById('model-tween').progress();
-          const eased = gsap.parseEase('power2.inOut')(progress);
-          this.cgaPass2.uniforms.scale.value = gsap.utils.interpolate(9, 2, eased);
-          this.cgaPass2.uniforms.amount.value = gsap.utils.interpolate(2, -10, eased);
-        }
-      });
-  }
 
   initCamera() {
     // Create with any initial values; we'll set the real ones in updateCamera()
@@ -400,13 +352,13 @@ export default class MainScreen {
     this.cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
     this.cgaPass2.uniforms.colLight.value = new THREE.Color('#ffffff');
     this.cgaPass2.uniforms.colWhite.value = new THREE.Color('#0000ff');
-    this.cgaPass2.uniforms.amount.value   = 2; // have fun here :))
-    this.cgaPass2.uniforms.scale.value    = 9; // 1.5 for mobile
+    this.cgaPass2.uniforms.amount.value   = 0.05; // have fun here :))
+    this.cgaPass2.uniforms.scale.value    = 2; // 1.5 for mobile
     this.badTVPass2 = new ShaderPass(BadTVShader);
     this.badTVPass2.uniforms.distortion.value = 0.1;
     this.badTVPass2.uniforms.distortion2.value = 0.02;
     this.badTVPass2.uniforms.rollSpeed.value = 0;
-    const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0.5, 0.0 );
+    const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.32, 0.15, 0.0 );
     this.composer2.addPass(renderPass);
     //this.composer2.addPass(fxaaPass2);
     this.composer2.addPass(this.badTVPass2);
