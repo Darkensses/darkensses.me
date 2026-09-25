@@ -2,13 +2,16 @@ import * as THREE from 'three';
 import { lenis } from './lenis';
 import imgLogo from '../assets/images/text.png';
 import modelPsx from '../assets/models/we2002model_centered.glb';
-import { EffectComposer, FXAAShader, GLTFLoader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
+import modelSeraph from '../assets/models/seraph_optimized_centered.glb';
+import { DRACOLoader, EffectComposer, FXAAShader, GLTFLoader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
 import { CGAShader } from './fx/FxCGA';
 import { BadTVShader } from './shaders/BadTVShader';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+
+import asciiShader from '../scripts/shaders/ascii.frag'
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -27,6 +30,7 @@ export default class MainScreen {
 
     this.logoDom = document.querySelector('#logotext h2');
     this.scrollSeparatorDom = document.querySelector('#model-target');
+    this.modelSeraphDOM = document.querySelector('#model-divine');
     //this.headerStickyDom = document.getElementById('header-sticky-wrapper');
     this.planeLogo = null;
     this.logoTexture = null;
@@ -34,6 +38,9 @@ export default class MainScreen {
     this.psxModel = null;
     this.mixerPsxModel = null;
     this.glbSize = null;
+
+    this.modelSeraph = null;
+    this.seraphSize = null;
 
     // GSAP code
     //gsap.ticker.add((time) => this.lenis.raf(time * 1000));
@@ -47,6 +54,7 @@ export default class MainScreen {
     this.initGrid();
     this.addLogo();
     this.initPsxModel();
+    this.initModelSeraph();
     this.initFX();
     this.addEventListeners();
     this.animate();
@@ -99,7 +107,8 @@ export default class MainScreen {
     this.lenis.on('scroll', () => {     
       ScrollTrigger.update(); 
       this.syncLogoToDOM();
-      this.syncPsxModelToDOM();      
+      this.syncPsxModelToDOM();  
+      this.syncModelSeraphToDOM();    
     });
   }
 
@@ -118,6 +127,7 @@ export default class MainScreen {
       ScrollTrigger.refresh();
       this.syncLogoToDOM();
       this.syncPsxModelToDOM();
+      this.syncModelSeraphToDOM();
     });
   }
 
@@ -225,6 +235,45 @@ export default class MainScreen {
 
   }
 
+  syncModelSeraphToDOM() {
+    if (!this.modelSeraphDOM || !this.modelSeraph) return;
+
+    const bounds = this.modelSeraphDOM.getBoundingClientRect();
+
+    const scale = bounds.height / this.seraphSize.y;
+    this.modelSeraph.scene.scale.set(scale,scale,scale);    
+
+    this.modelSeraph.scene.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
+    this.modelSeraph.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2);
+
+  }
+
+  initModelSeraph() {    
+    const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/jsm/');
+    dracoLoader.setDecoderConfig({type: 'js'})
+    loader.setDRACOLoader( dracoLoader );
+    loader.load(modelSeraph, (glb) => {
+      this.modelSeraph = glb;
+      
+      const box = new THREE.Box3().setFromObject(this.modelSeraph.scene);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      this.seraphSize = size;
+
+      this.modelSeraph.scene.traverse((child) => {
+        if(child.isMesh) {
+          child.material = new THREE.MeshNormalMaterial();
+          child.layers.set(3);
+        }        
+      });
+      this.scene.add(this.modelSeraph.scene);
+      this.syncModelSeraphToDOM();      
+
+    }, (xhr) => console.log(xhr.loaded/xhr.total  * 100 + '% loaded [seraph]'))
+  }
+
   initPsxModel() {
     const loader = new GLTFLoader();
     loader.load(
@@ -277,6 +326,30 @@ export default class MainScreen {
     this.composer.renderToScreen = false;
     const renderPass = new RenderPass(this.scene, this.camera);
 
+    this.asciiRenderTarget = new THREE.WebGLRenderTarget( this.sizes.width, this.sizes.height, { type: THREE.HalfFloatType } );
+    this.asciiFxMaterial = new THREE.ShaderMaterial({
+      uniforms: {        
+        u_time: { value: 0 },
+        u_texture: { value: null },
+        u_resolution: { value: new THREE.Vector4(this.sizes.width, this.sizes.height,1,1) },
+        u_cells: { value: 300 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vUv = uv;
+        }
+      `,
+      fragmentShader: asciiShader
+    });
+    this.asciiFxPass = new ShaderPass(this.asciiFxMaterial, 'u_texture');
+
+    this.asciiFxComposer = new EffectComposer(this.renderer);
+    this.asciiFxComposer.renderToScreen = false;
+    this.asciiFxComposer.addPass(renderPass);
+    this.asciiFxComposer.addPass(this.asciiFxPass);
+
     const fxaaPass = new ShaderPass(FXAAShader);
     fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );
     fxaaPass.renderToScreen = true;
@@ -314,7 +387,8 @@ export default class MainScreen {
         uniforms: {
           baseTexture: { value: null },
           fxTexture: { value: null },
-          fxTexture2: { value: null }
+          fxTexture2: { value: null },
+          asciiFxTexture: { value: null }
         },
         vertexShader: `
           varying vec2 vUv;
@@ -329,9 +403,10 @@ export default class MainScreen {
           uniform sampler2D baseTexture;
           uniform sampler2D fxTexture;
           uniform sampler2D fxTexture2;
+          uniform sampler2D asciiFxTexture;
 
           void main() {
-            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv);
+            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + texture2D(asciiFxTexture, vUv);
           }
         `
       })
@@ -393,9 +468,13 @@ export default class MainScreen {
     this.camera.layers.set(2);
     this.composer2.render();
 
+    this.camera.layers.set(3);
+    this.asciiFxComposer.render();
+
     this.mixPass.uniforms.baseTexture.value = this.baseRenderTarget.texture;
     this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain
     this.mixPass.uniforms.fxTexture2.value = this.composer2.readBuffer.texture;
+    this.mixPass.uniforms.asciiFxTexture.value = this.asciiFxComposer.readBuffer.texture;
 
     this.finalComposer.render();
 

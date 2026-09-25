@@ -53,17 +53,7 @@ import HorizontalScroll from '../components/HorizontalScroll.astro';
 
 		<div class="divine">
 			<Marquee text="Get Blessed" separator="&#10014;" />			
-			<div class="divine__text">
-				<span>Divine Machinery</span>
-			</div>
-			<div class="machinery">				
-			</div>			
-
-			<canvas id="asciigrid"></canvas>
-
-			<div class="machinery__logo">
-				<img src={machinerylogo.src} id="asciiImg"/>
-			</div>
+			<div id="model-divine"></div>
 		</div>
 	</section>
 
@@ -77,7 +67,6 @@ import HorizontalScroll from '../components/HorizontalScroll.astro';
 
 	<script>
 		import '../scripts/lenis'
-		import '../scripts/scene.oop'
-		import '../scripts/asciigrid.js'
+		import '../scripts/scene.oop'		
 	</script>
 </Layout>
