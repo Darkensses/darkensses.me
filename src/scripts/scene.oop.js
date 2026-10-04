@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { lenis } from './lenis';
 import imgLogo from '../assets/images/text.png';
 import modelPsx from '../assets/models/we2002model_centered.glb';
-import modelSeraph from '../assets/models/seraph_optimized_centered.glb';
+import modelSeraph from '../assets/models/angel_marble_optimized_centered.glb';
 import { DRACOLoader, EffectComposer, FXAAShader, GLTFLoader, OutputPass, RenderPass, RGBShiftShader, ShaderPass, UnrealBloomPass } from 'three/examples/jsm/Addons.js';
 import { CGAShader } from './fx/FxCGA';
 import { BadTVShader } from './shaders/BadTVShader';
@@ -12,6 +12,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 
 import asciiShader from '../scripts/shaders/ascii.frag'
+
+const artImages = import.meta.glob('../assets/images/art/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+  import: 'default'
+});
+const artUrls = Object.values(artImages);
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -45,7 +51,7 @@ export default class MainScreen {
     // GSAP code
     //gsap.ticker.add((time) => this.lenis.raf(time * 1000));
     //gsap.ticker.lagSmoothing(0);
-    
+
     //this.setupTextAnimation();
 
     this.initCamera();
@@ -55,24 +61,25 @@ export default class MainScreen {
     this.addLogo();
     this.initPsxModel();
     this.initModelSeraph();
+    this.initGallery();
     this.initFX();
     this.addEventListeners();
     this.animate();
   }
 
   setupTextAnimation() {
-    let split = new SplitText('.lyrics--large', { type: 'chars, lines, words' });    
-    
+    let split = new SplitText('.lyrics--large', { type: 'chars, lines, words' });
+
     gsap.from(split.chars, {
       yPercent: 50,
       opacity: 0,
       stagger: 0.1,
-      ease: "expo.out",      
+      ease: "expo.out",
       scrollTrigger: {
         trigger: '.lyrics--large',
         start: 'top 70%',
         markers: false,
-        toggleActions: "play none none reverse"        
+        toggleActions: "play none none reverse"
       }
     })
   }
@@ -104,11 +111,11 @@ export default class MainScreen {
   addEventListeners() {
     window.addEventListener('resize', this.onResize.bind(this));
 
-    this.lenis.on('scroll', () => {     
-      ScrollTrigger.update(); 
+    this.lenis.on('scroll', () => {
+      ScrollTrigger.update();
       this.syncLogoToDOM();
-      this.syncPsxModelToDOM();  
-      this.syncModelSeraphToDOM();    
+      this.syncPsxModelToDOM();
+      this.syncModelSeraphToDOM();
     });
   }
 
@@ -147,7 +154,7 @@ export default class MainScreen {
     this.torus.rotation.x = 90*Math.PI/180;
     this.torus.position.x = -500;
     //this.scene.add(this.torus);
-    
+
   }
 
   applyCoverUV(texture, planeW, planeH) {
@@ -241,14 +248,20 @@ export default class MainScreen {
     const bounds = this.modelSeraphDOM.getBoundingClientRect();
 
     const scale = bounds.height / this.seraphSize.y;
-    this.modelSeraph.scene.scale.set(scale,scale,scale);    
+    this.modelSeraph.scene.scale.set(scale,scale,scale);
 
     this.modelSeraph.scene.position.x = bounds.left - this.sizes.width / 2 + bounds.width / 2;
     this.modelSeraph.scene.position.y = (-bounds.top + this.sizes.height / 2 - bounds.height / 2);
 
+    if(this.light2) this.light2.target.position.copy(this.modelSeraph.scene.position);
+    if(this.gallery) {
+      this.gallery.position.copy(this.modelSeraph.scene.position);
+      this.gallery.position.z = 100;
+    }
+
   }
 
-  initModelSeraph() {    
+  initModelSeraph() {
     const loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('/jsm/');
@@ -256,7 +269,7 @@ export default class MainScreen {
     loader.setDRACOLoader( dracoLoader );
     loader.load(modelSeraph, (glb) => {
       this.modelSeraph = glb;
-      
+
       const box = new THREE.Box3().setFromObject(this.modelSeraph.scene);
       const size = new THREE.Vector3();
       box.getSize(size);
@@ -264,14 +277,52 @@ export default class MainScreen {
 
       this.modelSeraph.scene.traverse((child) => {
         if(child.isMesh) {
-          child.material = new THREE.MeshNormalMaterial();
+          child.material = new THREE.MeshStandardMaterial();
           child.layers.set(3);
-        }        
+        }
       });
       this.scene.add(this.modelSeraph.scene);
-      this.syncModelSeraphToDOM();      
+      this.syncModelSeraphToDOM();
+      const light1 = new THREE.AmbientLight(0xffffff, 0.77);
+      light1.layers.set(3);
+      this.scene.add(light1);
+
+      this.light2 = new THREE.DirectionalLight(0xffffff, 3.5);
+      this.light2.position.set(0.5,0,0.866);
+      this.light2.layers.set(3);
+      this.scene.add(this.light2);
+      this.scene.add(this.light2.target);
+      this.light2.target.position.copy(this.modelSeraph.scene.position);
 
     }, (xhr) => console.log(xhr.loaded/xhr.total  * 100 + '% loaded [seraph]'))
+  }
+
+  initGallery() {
+    const itemSize = 100;
+    const numItems = artUrls.length;
+    const radius = 300;
+
+    const geometry = new THREE.PlaneGeometry(itemSize, itemSize);
+    this.gallery = new THREE.Group();
+    const loader = new THREE.TextureLoader();
+
+    console.log(artImages)
+    console.log(artUrls)
+
+    artUrls.forEach((url, i) => {
+      loader.load(url.src, (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const theta = (i/numItems) * Math.PI * 2;
+        const plane = new THREE.Mesh(
+          geometry,
+          new THREE.MeshBasicMaterial({map: texture})
+        );
+        plane.position.set(radius * Math.cos(theta), 0, radius * Math.sin(theta));
+        plane.layers.set(4);
+        this.gallery.add(plane);
+      });
+    });
+    this.scene.add(this.gallery);
   }
 
   initPsxModel() {
@@ -326,9 +377,8 @@ export default class MainScreen {
     this.composer.renderToScreen = false;
     const renderPass = new RenderPass(this.scene, this.camera);
 
-    this.asciiRenderTarget = new THREE.WebGLRenderTarget( this.sizes.width, this.sizes.height, { type: THREE.HalfFloatType } );
     this.asciiFxMaterial = new THREE.ShaderMaterial({
-      uniforms: {        
+      uniforms: {
         u_time: { value: 0 },
         u_texture: { value: null },
         u_resolution: { value: new THREE.Vector4(this.sizes.width, this.sizes.height,1,1) },
@@ -345,10 +395,21 @@ export default class MainScreen {
     });
     this.asciiFxPass = new ShaderPass(this.asciiFxMaterial, 'u_texture');
 
-    this.asciiFxComposer = new EffectComposer(this.renderer);
+    this.asciiFxComposer = new EffectComposer(this.renderer, this.asciiRenderTarget);
     this.asciiFxComposer.renderToScreen = false;
     this.asciiFxComposer.addPass(renderPass);
     this.asciiFxComposer.addPass(this.asciiFxPass);
+
+    this.galleryComposer = new EffectComposer(this.renderer, this.galleryRenderTarget);
+    this.galleryComposer.renderToScreen = false;
+    this.galleryComposer.addPass(new RenderPass(this.scene, this.camera));
+
+    this.asciiDepthRT = new THREE.WebGLRenderTarget(this.sizes.width, this.sizes.height, {
+      depthTexture: new THREE.DepthTexture(this.sizes.width, this.sizes.height)
+    });
+    this.galleryDepthRT = new THREE.WebGLRenderTarget(this.sizes.width, this.sizes.height, {
+      depthTexture: new THREE.DepthTexture(this.sizes.width, this.sizes.height)
+    });
 
     const fxaaPass = new ShaderPass(FXAAShader);
     fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );
@@ -388,7 +449,10 @@ export default class MainScreen {
           baseTexture: { value: null },
           fxTexture: { value: null },
           fxTexture2: { value: null },
-          asciiFxTexture: { value: null }
+          asciiFxColor: { value: null },
+          asciiFxDepth: { value: null },
+          galleryColor: { value: null },
+          galleryDepth: { value: null }
         },
         vertexShader: `
           varying vec2 vUv;
@@ -403,10 +467,17 @@ export default class MainScreen {
           uniform sampler2D baseTexture;
           uniform sampler2D fxTexture;
           uniform sampler2D fxTexture2;
-          uniform sampler2D asciiFxTexture;
+          uniform sampler2D asciiFxColor;
+          uniform sampler2D asciiFxDepth;
+          uniform sampler2D galleryColor;
+          uniform sampler2D galleryDepth;
 
           void main() {
-            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + texture2D(asciiFxTexture, vUv);
+            float dASCII = texture2D(asciiFxDepth, vUv).r;
+            float dGallery = texture2D(galleryDepth, vUv).r;
+            vec4 winner = dGallery < dASCII ? texture2D(galleryColor, vUv) : texture2D(asciiFxColor, vUv);
+            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + winner;
+            //gl_FragColor = texture2D(galleryColor, vUv);
           }
         `
       })
@@ -441,10 +512,10 @@ export default class MainScreen {
     this.composer2.addPass(bloom2)
 
 
-    const outputPass = new OutputPass();    
+    const outputPass = new OutputPass();
     this.finalComposer = new EffectComposer(this.renderer);
-    this.finalComposer.addPass(renderPass);    
-    this.finalComposer.addPass(this.mixPass);    
+    this.finalComposer.addPass(renderPass);
+    this.finalComposer.addPass(this.mixPass);
     this.finalComposer.addPass(outputPass);
   }
 
@@ -456,6 +527,7 @@ export default class MainScreen {
 
     this.badTVPass.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
     this.badTVPass2.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
+    this.asciiFxMaterial.uniforms.u_time.value = this.clock.getElapsedTime();
 
     this.camera.layers.set(0);
     this.renderer.setRenderTarget(this.baseRenderTarget);
@@ -471,10 +543,26 @@ export default class MainScreen {
     this.camera.layers.set(3);
     this.asciiFxComposer.render();
 
+    this.camera.layers.set(4);
+    this.galleryComposer.render();
+
+    this.camera.layers.set(3);
+    this.renderer.setRenderTarget(this.asciiDepthRT);
+    this.renderer.clear()
+    this.renderer.render(this.scene, this.camera);
+
+    this.camera.layers.set(4);
+    this.renderer.setRenderTarget(this.galleryDepthRT);
+    this.renderer.clear()
+    this.renderer.render(this.scene, this.camera);
+
     this.mixPass.uniforms.baseTexture.value = this.baseRenderTarget.texture;
     this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain
     this.mixPass.uniforms.fxTexture2.value = this.composer2.readBuffer.texture;
-    this.mixPass.uniforms.asciiFxTexture.value = this.asciiFxComposer.readBuffer.texture;
+    this.mixPass.uniforms.asciiFxColor.value = this.asciiFxComposer.readBuffer.texture;
+    this.mixPass.uniforms.asciiFxDepth.value = this.asciiDepthRT.depthTexture;
+    this.mixPass.uniforms.galleryColor.value = this.galleryComposer.readBuffer.texture;
+    this.mixPass.uniforms.galleryDepth.value = this.galleryDepthRT.depthTexture;
 
     this.finalComposer.render();
 

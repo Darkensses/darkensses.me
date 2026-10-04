@@ -23,7 +23,7 @@ body {
 }
 
 .debug {
-  border: solid 1px blue; 
+  border: solid 1px blue;
   max-width: fit-content;
 }
 
@@ -33,7 +33,7 @@ body {
   justify-content: center;
 }
 
-@media (max-width: 680px) {  
+@media (max-width: 680px) {
 
   .wrapper-center {
     padding: 0 2rem;
@@ -41,7 +41,7 @@ body {
 }
 
 #webgl {
-  position: fixed;  
+  position: fixed;
   top: 0;
   left: 0;
   z-index: -1;
@@ -68,12 +68,12 @@ body {
   & ul {
     display: flex;
     list-style: none;
-    justify-content: space-around;    
+    justify-content: space-around;
     margin-block: 0;
     padding: 0;
   }
 
-  & li {    
+  & li {
     margin: 0;
     display: flex;
     flex: 1;
@@ -131,7 +131,7 @@ background-size: 60px 60px, 60px 60px;
 background-position: 30px 30px, 0 0;
 background-repeat: repeat, repeat;
     transform: perspective(666px) rotateX(-60deg);
-    transform-origin: center top;    
+    transform-origin: center top;
     backface-visibility: hidden;
   }
 
@@ -152,7 +152,7 @@ background-size: 60px 60px, 60px 60px;
 background-position: 30px 30px, 0 0;
 background-repeat: repeat, repeat;
     transform: perspective(666px) rotateX(60deg);
-    transform-origin: center bottom;    
+    transform-origin: center bottom;
     backface-visibility: hidden;
   }
 }
@@ -161,7 +161,7 @@ background-repeat: repeat, repeat;
   width: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid white;  
+  border: 1px solid white;
 
   .cover__info-title {
     border-bottom: 1px solid white;
@@ -177,8 +177,8 @@ background-repeat: repeat, repeat;
     display: flex;
     flex: 1;
     align-items: center;
-    justify-content: space-around;    
-    font-size: 0.7rem; 
+    justify-content: space-around;
+    font-size: 0.7rem;
 
     /*TODO: refactor*/
     & a {
@@ -191,7 +191,7 @@ background-repeat: repeat, repeat;
       padding: 1em;
       background: linear-gradient(#0000ff 0 0) 0/0% no-repeat transparent;
       transition: background-size 0.5s;
-      
+
     }
 
     & a:hover {
@@ -214,7 +214,7 @@ background-repeat: repeat, repeat;
   left: 0;
   bottom: 0;
   padding: 2rem;
-  font-size: 0.7rem;  
+  font-size: 0.7rem;
 }
 
 #metadata a {
@@ -235,7 +235,7 @@ background-repeat: repeat, repeat;
 
 .divine {
   width: 100%;
-  flex-grow: 1;  
+  flex-grow: 1;
   position: relative;
   /*mix-blend-mode: color; /*color, overlay, saturation*/
 
@@ -255,7 +255,7 @@ background-repeat: repeat, repeat;
 
     span {
       font-family: 'Avestrava';
-      font-size: clamp(3rem, calc(5vw + 1rem),8rem);      
+      font-size: clamp(3rem, calc(5vw + 1rem),8rem);
       letter-spacing: 0.04em;
 
     }
@@ -265,13 +265,12 @@ background-repeat: repeat, repeat;
 #model-divine {
   width: 50%;
   height: 100%;
-  background: var(--color-blue);
   opacity: 0.1;
   margin: 0 auto;
 }
 
 #about {
-  background-image: 
+  background-image:
     linear-gradient(
       to bottom,
       black 0%,
@@ -280,10 +279,10 @@ background-repeat: repeat, repeat;
       black 100%
     ),
     conic-gradient(
-      from 90deg at 1px 1px, 
-      rgba(0, 0, 255, 0) 90deg, 
+      from 90deg at 1px 1px,
+      rgba(0, 0, 255, 0) 90deg,
       rgba(0, 0, 255, 0.2) 0
-    );  
+    );
   background-size: 100% 100%, 60px 60px;
   padding: 8em 0;
 }
