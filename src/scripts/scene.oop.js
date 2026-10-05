@@ -124,7 +124,27 @@ export default class MainScreen {
     this.updateCamera();
 
     this.renderer.setSize(this.sizes.width, this.sizes.height);
-    //this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Real resize
+    const { width: w, height: h} = this.sizes;
+    const pr = this.renderer.getPixelRatio();
+
+    [
+      this.composer, this.composer2,
+      this.asciiFxComposer, this.galleryComposer,
+      this.finalComposer
+    ].forEach(c => c.setSize(w, h));
+
+    [this.asciiDepthRT, this.galleryDepthRT].forEach(rt => {
+      rt.setSize(w * pr, h * pr);
+      rt.depthTexture.image.width = w * pr;
+      rt.depthTexture.image.height = h * pr;
+    });
+
+    this.fxaaPass.uniforms.resolution.value.set(1 / (w * pr), 1 / (h * pr));
+    this.asciiFxMaterial.uniforms.u_resolution.value.set(w, h, 1, 1);
+    this.cgaPass.uniforms.resolution.value.set(w, h);
+    this.cgaPass2.uniforms.resolution.value.set(w, h);
 
     // Ensure layout has settled before reading bounds
     window.requestAnimationFrame(() => {
@@ -387,13 +407,13 @@ export default class MainScreen {
     this.asciiDepthRT = new THREE.WebGLRenderTarget(this.sizes.width * pr, this.sizes.height * pr, {
       depthTexture: new THREE.DepthTexture(this.sizes.width * pr, this.sizes.height * pr)
     });
-    this.galleryDepthRT = new THREE.WebGLRenderTarget(this.sizes.width, this.sizes.height, {
-      depthTexture: new THREE.DepthTexture(this.sizes.width, this.sizes.height)
+    this.galleryDepthRT = new THREE.WebGLRenderTarget(this.sizes.width * pr, this.sizes.height * pr, {
+      depthTexture: new THREE.DepthTexture(this.sizes.width * pr, this.sizes.height * pr)
     });
 
-    const fxaaPass = new ShaderPass(FXAAShader);
-    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width * pr, 1 / this.sizes.height * pr );
-    fxaaPass.material.transparent = true;
+    this.fxaaPass = new ShaderPass(FXAAShader);
+    this.fxaaPass.uniforms.resolution.value.set( 1 / (this.sizes.width * pr), 1 / (this.sizes.height * pr) );
+    this.fxaaPass.material.transparent = true;
 
     // Let's use it outside >:D
     this.badTVPass = new ShaderPass(BadTVShader);
@@ -401,12 +421,12 @@ export default class MainScreen {
     this.badTVPass.uniforms.distortion2.value = 0.2; // 0.2 ok
     this.badTVPass.uniforms.rollSpeed.value = 0; // 0.99 and remove -time2 in the shader
 
-    const cgaPass = new ShaderPass(CGAShader);
-    cgaPass.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
-    cgaPass.uniforms.colDark.value = new THREE.Color('#0000ff');
-    cgaPass.uniforms.colLight.value = new THREE.Color('#00a1ff');
-    cgaPass.uniforms.amount.value   = 1.2; // have fun here :))
-    cgaPass.uniforms.scale.value    = 3; // 1.5 for mobile
+    this.cgaPass = new ShaderPass(CGAShader);
+    this.cgaPass.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
+    this.cgaPass.uniforms.colDark.value = new THREE.Color('#0000ff');
+    this.cgaPass.uniforms.colLight.value = new THREE.Color('#00a1ff');
+    this.cgaPass.uniforms.amount.value   = 1.2; // have fun here :))
+    this.cgaPass.uniforms.scale.value    = 3; // 1.5 for mobile
 
     const rgbShiftPass = new ShaderPass(RGBShiftShader);
     rgbShiftPass.uniforms.amount.value = 0.0035;
@@ -415,9 +435,9 @@ export default class MainScreen {
     const bloom = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0.0, 0.0 );
 
     this.composer.addPass(renderPass);
-    this.composer.addPass(fxaaPass);
+    this.composer.addPass(this.fxaaPass);
     this.composer.addPass(this.badTVPass);
-    this.composer.addPass(cgaPass);
+    this.composer.addPass(this.cgaPass);
     this.composer.addPass(rgbShiftPass);
     this.composer.addPass(bloom);
 
