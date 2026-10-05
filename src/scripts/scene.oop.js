@@ -412,8 +412,7 @@ export default class MainScreen {
     });
 
     const fxaaPass = new ShaderPass(FXAAShader);
-    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );
-    fxaaPass.renderToScreen = true;
+    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );    
     fxaaPass.material.transparent = true;
 
     // Let's use it outside >:D
@@ -431,7 +430,6 @@ export default class MainScreen {
 
     const rgbShiftPass = new ShaderPass(RGBShiftShader);
     rgbShiftPass.uniforms.amount.value = 0.0035;
-    rgbShiftPass.renderToScreen = true;
     rgbShiftPass.enabled = true;
 
     const bloom = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.2, 0.0, 0.0 );
@@ -506,7 +504,7 @@ export default class MainScreen {
     this.badTVPass2.uniforms.rollSpeed.value = 0;
     const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.32, 0.15, 0.0 );
     this.composer2.addPass(renderPass);
-    //this.composer2.addPass(fxaaPass2);
+    this.composer2.addPass(fxaaPass2);
     this.composer2.addPass(this.badTVPass2);
     this.composer2.addPass(this.cgaPass2);
     this.composer2.addPass(bloom2)
