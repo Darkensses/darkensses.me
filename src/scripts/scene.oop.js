@@ -347,6 +347,12 @@ export default class MainScreen {
   }
 
   initFX() {
+    // Device pixel ratio (already capped in initRenderer). EffectComposer sizes its own
+    // buffers at CSS size * pr, so anything we create by hand (depth RTs) or any shader
+    // that needs the size of one real texel (FXAA) must use `size * pr` to match.
+    // CGA and ASCII resolution uniforms stay in CSS px on purpose: they only use ratios,
+    // and their look is tied to CSS width.
+    const pr = this.renderer.getPixelRatio();
     this.composer = new EffectComposer(this.renderer);
     this.composer.renderToScreen = false;
     const renderPass = new RenderPass(this.scene, this.camera);
@@ -378,15 +384,15 @@ export default class MainScreen {
     this.galleryComposer.renderToScreen = false;
     this.galleryComposer.addPass(new RenderPass(this.scene, this.camera));
 
-    this.asciiDepthRT = new THREE.WebGLRenderTarget(this.sizes.width, this.sizes.height, {
-      depthTexture: new THREE.DepthTexture(this.sizes.width, this.sizes.height)
+    this.asciiDepthRT = new THREE.WebGLRenderTarget(this.sizes.width * pr, this.sizes.height * pr, {
+      depthTexture: new THREE.DepthTexture(this.sizes.width * pr, this.sizes.height * pr)
     });
     this.galleryDepthRT = new THREE.WebGLRenderTarget(this.sizes.width, this.sizes.height, {
       depthTexture: new THREE.DepthTexture(this.sizes.width, this.sizes.height)
     });
 
     const fxaaPass = new ShaderPass(FXAAShader);
-    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );
+    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width * pr, 1 / this.sizes.height * pr );
     fxaaPass.material.transparent = true;
 
     // Let's use it outside >:D
