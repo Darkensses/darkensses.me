@@ -480,7 +480,6 @@ export default class MainScreen {
 
     const outputPass = new OutputPass();
     this.finalComposer = new EffectComposer(this.renderer);
-    this.finalComposer.addPass(renderPass);
     this.finalComposer.addPass(this.mixPass);
     this.finalComposer.addPass(outputPass);
   }
