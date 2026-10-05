@@ -174,8 +174,6 @@ export default class MainScreen {
       texture.repeat.set(ratio, 1);
       texture.offset.set((1 - ratio) / 2, 0);
     }
-
-    texture.needsUpdate = true;
   }
 
   syncLogoToDOM() {
