@@ -395,12 +395,12 @@ export default class MainScreen {
     });
     this.asciiFxPass = new ShaderPass(this.asciiFxMaterial, 'u_texture');
 
-    this.asciiFxComposer = new EffectComposer(this.renderer, this.asciiRenderTarget);
+    this.asciiFxComposer = new EffectComposer(this.renderer);
     this.asciiFxComposer.renderToScreen = false;
     this.asciiFxComposer.addPass(renderPass);
     this.asciiFxComposer.addPass(this.asciiFxPass);
 
-    this.galleryComposer = new EffectComposer(this.renderer, this.galleryRenderTarget);
+    this.galleryComposer = new EffectComposer(this.renderer);
     this.galleryComposer.renderToScreen = false;
     this.galleryComposer.addPass(new RenderPass(this.scene, this.camera));
 
