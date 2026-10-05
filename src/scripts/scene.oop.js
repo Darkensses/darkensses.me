@@ -32,8 +32,6 @@ export default class MainScreen {
 
     this.perspective = 600;
 
-    this.mesh = null;
-
     this.logoDom = document.querySelector('#logotext h2');
     this.scrollSeparatorDom = document.querySelector('#model-target');
     this.modelSeraphDOM = document.querySelector('#model-divine');
@@ -56,8 +54,6 @@ export default class MainScreen {
 
     this.initCamera();
     this.initRenderer();
-    //this.initMesh();
-    this.initGrid();
     this.addLogo();
     this.initPsxModel();
     this.initModelSeraph();
@@ -67,6 +63,8 @@ export default class MainScreen {
     this.animate();
   }
 
+  // TODO: Check in case you want to use a similar effect,
+  // otherwise delete it!
   setupTextAnimation() {
     let split = new SplitText('.lyrics--large', { type: 'chars, lines, words' });
 
@@ -136,25 +134,6 @@ export default class MainScreen {
       this.syncPsxModelToDOM();
       this.syncModelSeraphToDOM();
     });
-  }
-
-  initMesh() {
-    const geometry = new THREE.BoxGeometry(200, 200, 200);
-    const material = new THREE.MeshBasicMaterial({ color: "#7444ff" });
-    this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.layers.set(0);
-    this.scene.add(this.mesh);
-  }
-
-  initGrid() {
-    //this.gridHelper = new THREE.GridHelper(1000,16, 0x0000FF, 0x0000FF);
-    const geometry = new THREE.TorusGeometry(300, 200, 32, 32);
-    const material = new THREE.MeshBasicMaterial({ color: 'blue', wireframe: true });
-    this.torus = new THREE.Mesh(geometry, material);
-    this.torus.rotation.x = 90*Math.PI/180;
-    this.torus.position.x = -500;
-    //this.scene.add(this.torus);
-
   }
 
   applyCoverUV(texture, planeW, planeH) {
@@ -306,9 +285,6 @@ export default class MainScreen {
     this.gallery = new THREE.Group();
     const loader = new THREE.TextureLoader();
 
-    console.log(artImages)
-    console.log(artUrls)
-
     artUrls.forEach((url, i) => {
       loader.load(url.src, (texture) => {
         texture.colorSpace = THREE.SRGBColorSpace;
@@ -330,7 +306,6 @@ export default class MainScreen {
     loader.load(
       modelPsx,
       (glb) => {
-        console.log(glb)
         this.psxModel = glb;
 
         // calculate here, otherwise you will get jittering!
@@ -412,7 +387,7 @@ export default class MainScreen {
     });
 
     const fxaaPass = new ShaderPass(FXAAShader);
-    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );    
+    fxaaPass.uniforms.resolution.value.set( 1 / this.sizes.width, 1 / this.sizes.height );
     fxaaPass.material.transparent = true;
 
     // Let's use it outside >:D
@@ -441,7 +416,7 @@ export default class MainScreen {
     this.composer.addPass(rgbShiftPass);
     this.composer.addPass(bloom);
 
-    const _mixPass = new ShaderPass(
+    this.mixPass = new ShaderPass(
       new THREE.ShaderMaterial({
         uniforms: {
           baseTexture: { value: null },
@@ -475,22 +450,14 @@ export default class MainScreen {
             float dGallery = texture2D(galleryDepth, vUv).r;
             vec4 winner = dGallery < dASCII ? texture2D(galleryColor, vUv) : texture2D(asciiFxColor, vUv);
             gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + winner;
-            //gl_FragColor = texture2D(galleryColor, vUv);
           }
         `
       })
     );
-    this.mixPass = _mixPass;
-    this.mixPass.needsSwap = true;
 
-    this.baseRenderTarget2 = new THREE.WebGLRenderTarget( this.sizes.width, this.sizes.height, { type: THREE.HalfFloatType } )
     this.composer2 = new EffectComposer(this.renderer);
     this.composer2.renderToScreen = false;
-    const fxaaPass2 = new ShaderPass(FXAAShader);
-    fxaaPass2.uniforms.resolution.value.set( 1 / (this.sizes.width * window.devicePixelRatio), 1 /( this.sizes.height * window.devicePixelRatio ));
-    fxaaPass2.renderToScreen = true;
-    fxaaPass2.material.transparent = true;
-    //fxaaPass2.enabled = false
+
     this.cgaPass2 = new ShaderPass(CGAShader);
     this.cgaPass2.uniforms.resolution.value.set(this.sizes.width, this.sizes.height)
     this.cgaPass2.uniforms.colDark.value = new THREE.Color('#0000ff');
@@ -504,7 +471,8 @@ export default class MainScreen {
     this.badTVPass2.uniforms.rollSpeed.value = 0;
     const bloom2 = new UnrealBloomPass(new THREE.Vector2(this.sizes.width, this.sizes.height), 0.32, 0.15, 0.0 );
     this.composer2.addPass(renderPass);
-    this.composer2.addPass(fxaaPass2);
+
+    // Note: If you add a FXAA pass, you can get a ghosty-glitched FX
     this.composer2.addPass(this.badTVPass2);
     this.composer2.addPass(this.cgaPass2);
     this.composer2.addPass(bloom2)
@@ -519,7 +487,6 @@ export default class MainScreen {
 
   animate() {
     window.requestAnimationFrame(() => this.animate());
-    //this.renderer.render(this.scene, this.camera);
 
     if(this.mixerPsxModel) this.mixerPsxModel.update(this.clock.getDelta()*0.9)
 
@@ -563,13 +530,6 @@ export default class MainScreen {
     this.mixPass.uniforms.galleryDepth.value = this.galleryDepthRT.depthTexture;
 
     this.finalComposer.render();
-
-    // this.mixPass2.uniforms.baseTexture.value = this.mixPass.uniforms.baseTexture.value;
-    // this.mixPass2.uniforms.fxTexture.value = this.composer2.readBuffer.texture; // result of FX chain
-
-
-    //this.renderer.clear();
-    //this.composer.render();
   }
 }
 
