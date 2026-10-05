@@ -347,7 +347,6 @@ export default class MainScreen {
   }
 
   initFX() {
-    this.baseRenderTarget = new THREE.WebGLRenderTarget( this.sizes.width, this.sizes.height, { type: THREE.HalfFloatType } )
     this.composer = new EffectComposer(this.renderer);
     this.composer.renderToScreen = false;
     const renderPass = new RenderPass(this.scene, this.camera);
@@ -419,7 +418,6 @@ export default class MainScreen {
     this.mixPass = new ShaderPass(
       new THREE.ShaderMaterial({
         uniforms: {
-          baseTexture: { value: null },
           fxTexture: { value: null },
           fxTexture2: { value: null },
           asciiFxColor: { value: null },
@@ -437,7 +435,6 @@ export default class MainScreen {
         fragmentShader: `
           varying vec2 vUv;
 
-          uniform sampler2D baseTexture;
           uniform sampler2D fxTexture;
           uniform sampler2D fxTexture2;
           uniform sampler2D asciiFxColor;
@@ -449,7 +446,7 @@ export default class MainScreen {
             float dASCII = texture2D(asciiFxDepth, vUv).r;
             float dGallery = texture2D(galleryDepth, vUv).r;
             vec4 winner = dGallery < dASCII ? texture2D(galleryColor, vUv) : texture2D(asciiFxColor, vUv);
-            gl_FragColor = texture2D(baseTexture, vUv) + texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + winner;
+            gl_FragColor = texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + winner;
           }
         `
       })
@@ -493,11 +490,6 @@ export default class MainScreen {
     this.badTVPass2.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
     this.asciiFxMaterial.uniforms.u_time.value = this.clock.getElapsedTime();
 
-    this.camera.layers.set(0);
-    this.renderer.setRenderTarget(this.baseRenderTarget);
-    this.renderer.clear();
-    this.renderer.render(this.scene, this.camera);
-
     this.camera.layers.set(1);
     this.composer.render();
 
@@ -520,7 +512,6 @@ export default class MainScreen {
     this.renderer.clear()
     this.renderer.render(this.scene, this.camera);
 
-    this.mixPass.uniforms.baseTexture.value = this.baseRenderTarget.texture;
     this.mixPass.uniforms.fxTexture.value = this.composer.readBuffer.texture; // result of FX chain
     this.mixPass.uniforms.fxTexture2.value = this.composer2.readBuffer.texture;
     this.mixPass.uniforms.asciiFxColor.value = this.asciiFxComposer.readBuffer.texture;
