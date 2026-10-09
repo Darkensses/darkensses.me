@@ -21,6 +21,13 @@ const artUrls = Object.values(artImages);
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+const LAYER = {
+  LOGO: 1,
+  PSX: 2,
+  SERAPH: 3,
+  GALLERY: 4
+};
+
 export default class MainScreen {
   constructor(options) {
     this.container = options.dom;
@@ -213,7 +220,7 @@ export default class MainScreen {
       this.planeLogo = new THREE.Mesh(geometry, material);
       this.planeLogo.position.z = 0; // Important for the 1:1 mapping assumption
 
-      this.planeLogo.layers.set(1);
+      this.planeLogo.layers.set(LAYER.LOGO);
 
       this.scene.add(this.planeLogo);
 
@@ -275,18 +282,18 @@ export default class MainScreen {
       this.modelSeraph.scene.traverse((child) => {
         if(child.isMesh) {
           child.material = new THREE.MeshStandardMaterial();
-          child.layers.set(3);
+          child.layers.set(LAYER.SERAPH);
         }
       });
       this.scene.add(this.modelSeraph.scene);
       this.syncModelSeraphToDOM();
       const light1 = new THREE.AmbientLight(0xffffff, 0.77);
-      light1.layers.set(3);
+      light1.layers.set(LAYER.SERAPH);
       this.scene.add(light1);
 
       this.light2 = new THREE.DirectionalLight(0xffffff, 3.5);
       this.light2.position.set(0.5,0,0.866);
-      this.light2.layers.set(3);
+      this.light2.layers.set(LAYER.SERAPH);
       this.scene.add(this.light2);
       this.scene.add(this.light2.target);
       this.light2.target.position.copy(this.modelSeraph.scene.position);
@@ -313,7 +320,7 @@ export default class MainScreen {
         );
         plane.position.set(radius * Math.cos(theta), 0, radius * Math.sin(theta));
         plane.lookAt(0,0,0);
-        plane.layers.set(4);
+        plane.layers.set(LAYER.GALLERY);
         this.gallery.add(plane);
       });
     });
@@ -347,7 +354,7 @@ export default class MainScreen {
             } else if (child.material) {
               child.material = wireframeMaterial;
             }
-            child.layers.set(2)
+            child.layers.set(LAYER.PSX)
           }
         })
         this.scene.add(this.psxModel.scene);
@@ -517,24 +524,24 @@ export default class MainScreen {
     this.badTVPass2.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
     this.asciiFxMaterial.uniforms.u_time.value = this.clock.getElapsedTime();
 
-    this.camera.layers.set(1);
+    this.camera.layers.set(LAYER.LOGO);
     this.composer.render();
 
-    this.camera.layers.set(2);
+    this.camera.layers.set(LAYER.PSX);
     this.composer2.render();
 
-    this.camera.layers.set(3);
+    this.camera.layers.set(LAYER.SERAPH);
     this.asciiFxComposer.render();
 
-    this.camera.layers.set(4);
+    this.camera.layers.set(LAYER.GALLERY);
     this.galleryComposer.render();
 
-    this.camera.layers.set(3);
+    this.camera.layers.set(LAYER.SERAPH);
     this.renderer.setRenderTarget(this.asciiDepthRT);
     this.renderer.clear()
     this.renderer.render(this.scene, this.camera);
 
-    this.camera.layers.set(4);
+    this.camera.layers.set(LAYER.GALLERY);
     this.renderer.setRenderTarget(this.galleryDepthRT);
     this.renderer.clear()
     this.renderer.render(this.scene, this.camera);
