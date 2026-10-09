@@ -309,9 +309,10 @@ export default class MainScreen {
         const theta = (i/numItems) * Math.PI * 2;
         const plane = new THREE.Mesh(
           geometry,
-          new THREE.MeshBasicMaterial({map: texture})
+          new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide})
         );
         plane.position.set(radius * Math.cos(theta), 0, radius * Math.sin(theta));
+        plane.lookAt(0,0,0);
         plane.layers.set(4);
         this.gallery.add(plane);
       });
@@ -509,6 +510,8 @@ export default class MainScreen {
     window.requestAnimationFrame(() => this.animate());
 
     if(this.mixerPsxModel) this.mixerPsxModel.update(this.clock.getDelta()*0.9)
+
+    this.gallery.rotation.y = this.clock.getElapsedTime() * 0.05;
 
     this.badTVPass.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
     this.badTVPass2.uniforms.time.value = this.clock.getElapsedTime() * 0.05;
