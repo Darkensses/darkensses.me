@@ -11,7 +11,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 
-import asciiShader from '../scripts/shaders/ascii.frag'
+import asciiShader from '../scripts/shaders/ascii.frag';
+import fxSceneMixShader from '../scripts/shaders/fx.scene.mix.frag';
+import defaultVertex from '../scripts/shaders/default.vert';
 
 const artImages = import.meta.glob('../assets/images/art/*.{png,jpg,jpeg,webp}', {
   eager: true,
@@ -390,13 +392,7 @@ export default class MainScreen {
         u_resolution: { value: new THREE.Vector4(this.sizes.width, this.sizes.height,1,1) },
         u_cells: { value: 300 }
       },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          vUv = uv;
-        }
-      `,
+      vertexShader: defaultVertex,
       fragmentShader: asciiShader
     });
     this.asciiFxPass = new ShaderPass(this.asciiFxMaterial, 'u_texture');
@@ -457,30 +453,8 @@ export default class MainScreen {
           galleryColor: { value: null },
           galleryDepth: { value: null }
         },
-        vertexShader: `
-          varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-          }
-        `,
-        fragmentShader: `
-          varying vec2 vUv;
-
-          uniform sampler2D fxTexture;
-          uniform sampler2D fxTexture2;
-          uniform sampler2D asciiFxColor;
-          uniform sampler2D asciiFxDepth;
-          uniform sampler2D galleryColor;
-          uniform sampler2D galleryDepth;
-
-          void main() {
-            float dASCII = texture2D(asciiFxDepth, vUv).r;
-            float dGallery = texture2D(galleryDepth, vUv).r;
-            vec4 winner = dGallery < dASCII ? texture2D(galleryColor, vUv) : texture2D(asciiFxColor, vUv);
-            gl_FragColor = texture2D(fxTexture, vUv) + texture2D(fxTexture2, vUv) + winner;
-          }
-        `
+        vertexShader: defaultVertex,
+        fragmentShader: fxSceneMixShader
       })
     );
 
